@@ -4,16 +4,21 @@ const bodyParser = require('body-parser')
 require('dotenv').load();
 const cors = require('cors')
 
+const mongoose = require('mongoose');
+//Initialize mongoose scheme
 const Schema = mongoose.Schema;
-const mongoose = require('mongoose')
+let dbConn;
+
 
 //Initialize mongoose connection with cloud db server
-mongoose.connect(process.env.MLAB_URI, function(err) {
+dbConn = mongoose.connect(process.env.MLAB_URI, function(err) {
   if(err) {
     console.log(err);
   }
   //Log if connection was established or not
   console.log(mongoose.connection.readyState, "Mongo DB connection established");
+  //Delete all collections currently present in the db to start fresh
+  dbConn.connection.db.dropDatabase();
 });
 
 //Create user schema
@@ -32,13 +37,20 @@ let userTim = new User({
   username: "Timothy",
 });
 
-// Save the test user to the db
-userTim.save();
+// Save the userTim document
+userTim.save(function(err, userTim) {
+  if(err) {
+    console.log(err);
+  }
+  console.log(userTim._id);
+});
 
 
-//console.log(process.env.MLAB_URI);
+//Express Middleware:
 
+//Enable cors for cross site requests
 app.use(cors())
+
 // Include bodyparser middleware for parsing message body in form posts
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
@@ -53,9 +65,9 @@ app.get('/', (req, res) => {
 
 
 // Not found middleware
-app.use((req, res, next) => {
-  return next({status: 404, message: 'not found'})
-})
+// app.use((req, res, next) => {
+//   return next({status: 404, message: 'not found'})
+// })
 
 // Error Handling middleware
 app.use((err, req, res, next) => {
@@ -76,19 +88,21 @@ app.use((err, req, res, next) => {
     .send(errMessage)
 })
 
-
-
-
-// app.post("/addname", (req, res) => {
-//   var myData = new User(req.body);
-//   myData.save()
-//     .then(item => {
-//       res.send("item saved to database");
-//     })
-//     .catch(err => {
-//       res.status(400).send("unable to save to database");
-//     });
-// });
+//Create post route that creates new user with submitted data
+app.post("/api/exercise/new-user", function(req, res) {
+  let newUser = new User({username: req.body});
+  newUser.save(function(err, newUser) {
+    console.log("new user saved")
+  })
+    .catch(err => {
+      res.status(400).send("unable to save to database", err)
+    })
+    .then(item => {
+      res.send({userId: item._id})
+    })
+   
+  }
+)
 
 
 
