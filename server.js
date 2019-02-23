@@ -2,14 +2,13 @@ const express = require('express');
 const app = express();
 
 require('dotenv').load();
-
+let middleware = require('./middleware');
 let routes = require('./routes');
+let main = require('./app');
 const mongoose = require('mongoose');
 //Initialize mongoose scheme
-const Schema = mongoose.Schema;
 
-//import routes and enable for use
-app.use('./routes', routes);
+
 
 //Initialize mongoose connection with cloud db server
 mongoose.connect(process.env.MLAB_URI, function(err) {
@@ -28,34 +27,13 @@ mongoose.connection.on('open', function(){
   mongoose.connection.db.dropDatabase();
 });
 
-//Create user schema
-let userSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-  }
-})
 
-//Create user model
-let User = mongoose.model("User", userSchema);
-
-//Create first test user
-let userTim = new User({
-  username: "Timothy",
-});
-
-// Save the userTim document
-userTim.save(function(err, userTim) {
-  if(err) {
-    console.log(err);
-  }
-  //console.log(userTim._id);
-});
-
-
-
-
-
+//Import middleware and enable
+app.use(middleware);
+//import routes and enable for use
+app.use('/', routes);
+//Create first seed user:
+main.createTim;
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
