@@ -1,11 +1,11 @@
 let express = require('express')
 let router = express.Router()
-let controllers = require('./controllers.js')
+let controllers = require('./mongoose/controllers')
 
 
 
 //Root route that displays html file from views folder
-router.get('/', controllers.get_html);
+//router.get('/', controllers.get_html);
 
 
 //Create post route that creates new user with submitted data

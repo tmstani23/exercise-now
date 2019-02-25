@@ -11,9 +11,10 @@ router.use(cors())
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 
-//Use public folder to allow using public folder and its css file
+//Use public folder to allow using public folderand its css file
 router.use(express.static('public'));
-
+//Use views folder and its html file
+router.use(express.static('views'));
 
 
 // Error Handling middleware

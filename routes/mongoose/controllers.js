@@ -9,8 +9,9 @@ exports.post_user = (req, res) => {
     newUser.save((err, newUser) => err ? console.log(err) : res.send({userId: newUser._id}));  
 }
 
+
 //Function that displays html file at route
-exports.get_html = (req, res) => res.sendFile(__dirname + '/views/index.html');
+//exports.get_html = (req, res) => res.sendFile(__dirname + '/views/index.html');
 
 //Function that displays all users in the database
 exports.get_users = (req, res) => {

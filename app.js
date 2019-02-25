@@ -1,4 +1,4 @@
-let User = require('./models');
+let User = require('./routes/mongoose/models.js');
 
 //Create first test user
 let userTim = new User({

@@ -1,12 +1,9 @@
 const express = require('express');
 const app = express();
-
-require('dotenv').load();
-let middleware = require('./middleware');
-let routes = require('./routes');
+let middleware = require('./routes/middleware.js');
+let routes = require('./routes/routes.js');
 let main = require('./app');
 const mongoose = require('mongoose');
-//Initialize mongoose scheme
 
 
 
@@ -21,7 +18,7 @@ mongoose.connect(process.env.MLAB_URI, function(err) {
   
 });
 
-//Connect to the mongo database
+//Once database connection is open:
 mongoose.connection.on('open', function(){
   // Delete existing documents on connection
   mongoose.connection.db.dropDatabase();
@@ -30,11 +27,14 @@ mongoose.connection.on('open', function(){
 
 //Import middleware and enable
 app.use(middleware);
+
 //import routes and enable for use
 app.use('/', routes);
+
 //Create first seed user:
 main.createTim;
 
+// Main server listener that accepts http connections on port or localhost 3000
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
