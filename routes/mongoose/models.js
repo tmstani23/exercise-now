@@ -1,10 +1,10 @@
 
 
 const mongoose = require('mongoose');
-const userSchema = require('./schema.js');
+const schemas = require('./schema.js');
   
 //Create user model
-let User = mongoose.model("User", userSchema);
+let User = mongoose.model("User", schemas.userSchema);
   
 
 
