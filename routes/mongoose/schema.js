@@ -5,10 +5,7 @@ const Schema = mongoose.Schema;
 //Create user schema
 //Create sub-schema of each user as exercise schema
 let exerciseSchema = new Schema({
-  uid: {
-    type: String,
-    required: true,
-  },
+  
   description: {
     type: String,
     required: true,
@@ -20,9 +17,10 @@ let exerciseSchema = new Schema({
   date: {
     type: Date,
     default: Date.now,
-  }
+  },
+  
          
-});
+}, { usePushEach: true });
 
 let userSchema = new Schema({
     username: {
@@ -30,7 +28,7 @@ let userSchema = new Schema({
       required: true,
     },
     children: [exerciseSchema],
-});
+}, { usePushEach: true });
 
 
 
