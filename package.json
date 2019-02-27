@@ -1,17 +1,18 @@
 {
-	"name": "fcc-exercise-tracker",
+	"name": "Exercise-Now",
 	"version": "0.1.0",
-	"description": "A REST API project, part of Free Code Camp's curriculum",
+	"description": "A REST API project exercise tracker app",
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js"
 	},
 	"dependencies": {
-		"express": "^4.14.0",
-		"mongoose": "^4.7.2",
-		"mongodb": "^2.2.14",
 		"body-parser": "^1.15.2",
 		"cors": "^2.8.1",
+		"dotenv": "^6.2.0",
+		"express": "^4.14.0",
+		"mongodb": "^2.2.36",
+		"mongoose": "^5.4.14",
 		"shortid": "^2.2.6"
 	},
 	"engines": {
