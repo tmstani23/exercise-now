@@ -8,7 +8,7 @@ exports.post_user = (req, res) => {
     //Set new user instance of User model
     let newUser = new User({username: userInput});
     // Save the new user to the database
-    newUser.save((err, newUser) => err ? console.log(err) : res.send({userId: newUser._id}));  
+    newUser.save((err, newUser) => err ? res.send({errorMessage: err.message}) : res.send({userId: newUser._id}));  
 }
 
 //Function that takes exercise form input, applies it to a user and saves as a subdocument in the db
@@ -25,8 +25,7 @@ exports.post_exercise = (req, res) => {
       user.children.push({
         description: req.body.description, 
         duration: req.body.duration, 
-        date: req.body.date, 
-        setDefaultsOnInsert: true,
+        date: req.body.date == "" ? undefined : req.body.date,
       });
     
     user.save(function (err) {
@@ -36,7 +35,7 @@ exports.post_exercise = (req, res) => {
       }
       else {
         console.log('Success! Exercise Added to User', user.children);
-        res.send({message: req.body});
+        res.json({userData: user});
       } 
     });
     };

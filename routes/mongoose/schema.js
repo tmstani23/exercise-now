@@ -26,6 +26,7 @@ let userSchema = new Schema({
     username: {
       type: String,
       required: true,
+      unique: true,
     },
     children: [exerciseSchema],
 }, { usePushEach: true });
