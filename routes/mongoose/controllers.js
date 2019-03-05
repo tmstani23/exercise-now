@@ -43,9 +43,6 @@ exports.post_exercise = (req, res) => {
   
 };
 
-//Function that displays html file at route
-//exports.get_html = (req, res) => res.sendFile(__dirname + '/views/index.html');
-
 //Function that displays all users in the database
 exports.get_users = (req, res) => {
   // Find any user
@@ -65,3 +62,39 @@ exports.get_users = (req, res) => {
     res.send(userArr);
   }); 
 }
+
+exports.get_user_exercise_log = (req, res) => {
+  let userId = req.param('userId');
+  let fromDate = req.param('from') || "";
+  let toDate = req.param('to') || "";
+  //console.log(userId, fromDate,toDate); 
+  User.findById(userId, (err,user) => {
+    if(err) {
+      console.log(err);
+      res.send({errorMessage: err.message});
+    }
+    else if(fromDate && toDate != "") {
+      console.log(fromDate,toDate);
+     //  let query = user.children.find({date: { $gte: fromDate, $lte: toDate }});
+     //  user.children.find({date: { $gte: fromDate, $lte: toDate }}, (err,query) => {
+     //    res.json(query);
+     // })
+    }
+    else {
+      user.exerciseCount = user.children.length;
+      user.save(function (err) {
+        if (err) {
+          console.log(err);
+          res.send({errorMessage: err.message});
+        }
+        else {
+          
+          res.json({userData: user});
+        } 
+      });
+      
+    };
+  });
+  
+}
+

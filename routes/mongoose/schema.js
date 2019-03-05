@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//Create user schema
+
 //Create sub-schema of each user as exercise schema
 let exerciseSchema = new Schema({
   
@@ -18,15 +18,18 @@ let exerciseSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  
-         
+       
 }, { usePushEach: true });
 
+//Create user schema
 let userSchema = new Schema({
     username: {
       type: String,
       required: true,
       unique: true,
+    },
+    exerciseCount: {
+    type: Number,
     },
     children: [exerciseSchema],
 }, { usePushEach: true });
