@@ -1,4 +1,4 @@
-let User = require('./routes/mongoose/models.js');
+let User = require('./routes/mongoose/models/user.js');
 
 //Create first test user
 let userTim = new User({
@@ -8,9 +8,9 @@ let userTim = new User({
 
 
 //Save the userTim document
-exports.createTim = userTim.save(function (err, userTim) {
-    if (err) {
-        console.log(err);
-    }
-    console.log('Timothy created: ', userTim._id);
-});
+// exports.createTim = userTim.save(function (err, userTim) {
+//     if (err) {
+//         console.log(err);
+//     }
+//     console.log('Timothy created: ', userTim._id);
+// });

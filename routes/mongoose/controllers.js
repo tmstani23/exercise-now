@@ -1,5 +1,5 @@
-let User = require('./models');
-
+let User = require('./models/user');
+let Log = require('./models/exercise_log');
 
 
 //Function that takes user form input as username and creates/saves a new user
