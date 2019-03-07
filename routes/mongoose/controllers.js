@@ -1,5 +1,6 @@
 let User = require('./models/user');
 let Log = require('./models/exercise_log');
+let moment = require('moment');
 
 
 //Function that takes user form input as username and creates/saves a new user
@@ -22,22 +23,25 @@ exports.post_exercise = (req, res) => {
     }
     else {
       
-      user.children.push({
+      let userLog = new Log ({
+        uid: inputId,
         description: req.body.description, 
         duration: req.body.duration, 
         date: req.body.date == "" ? undefined : req.body.date,
       });
+      userLog.save((err, newLog) => err ? res.send({errorMessage: err.message}) : console.log("new exercise log saved"))
+      user.exerciseLogs.push(userLog);
     
-    user.save(function (err) {
-      if (err) {
-        console.log(err);
-        res.send({errorMessage: err.message});
-      }
-      else {
-        console.log('Success! Exercise Added to User', user.children);
-        res.json({userData: user});
-      } 
-    });
+      user.save(function (err) {
+        if (err) {
+          console.log(err);
+          res.send({errorMessage: err.message});
+        }
+        else {
+          console.log('Success! Exercise Added to User', user.exerciseLogs);
+          res.json({userData: user});
+        } 
+      });
     };
   });
   
@@ -51,7 +55,6 @@ exports.get_users = (req, res) => {
       console.log(err);
     }
     let userArr = [];
-    
     // Add each user to the user array
     users.forEach( user => {
         let {username, _id} = user
@@ -74,14 +77,18 @@ exports.get_user_exercise_log = (req, res) => {
       res.send({errorMessage: err.message});
     }
     else if(fromDate && toDate != "") {
-      console.log(fromDate,toDate);
-     //  let query = user.children.find({date: { $gte: fromDate, $lte: toDate }});
-     //  user.children.find({date: { $gte: fromDate, $lte: toDate }}, (err,query) => {
-     //    res.json(query);
-     // })
+      //console.log(fromDate,toDate);
+      //let childArr = user.children;
+      //let query = user.children.find({date: { $gte: fromDate, $lte: toDate }});
+      Log.find({uid: userId, date: { $gte: fromDate, $lte: toDate }}, (err,result) => {
+        if(err) {
+          console.log(err);
+        }
+        res.json(result);
+     })
     }
     else {
-      user.exerciseCount = user.children.length;
+      user.exerciseCount = user.exerciseLogs.length;
       user.save(function (err) {
         if (err) {
           console.log(err);

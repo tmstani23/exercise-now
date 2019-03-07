@@ -4,6 +4,7 @@ let middleware = require('./routes/middleware.js');
 let routes = require('./routes/routes.js');
 let main = require('./app');
 const mongoose = require('mongoose');
+let moment = require('moment');
 
 
 
@@ -14,17 +15,22 @@ mongoose.connect(process.env.MLAB_URI, function(err) {
   }
   //Log if connection was established or not
   console.log(mongoose.connection.readyState, "Mongo DB connection established");
-  //Delete all collections currently present in the db to start fresh
-  
 });
 
 //Once database connection is open:
 mongoose.connection.on('open', function(){
   // Delete existing documents on connection
-  mongoose.connection.db.dropDatabase();
+  //mongoose.connection.db.dropDatabase();
 });
 
-
+// convert all dates to formatted dates
+app.set('json replacer', function (key, value) {
+  if (this[key] instanceof Date) {
+// Convert to format: January, 23, 1999
+value = moment(this[key]).format('MMMM, DD, YYYY');
+  }
+  return value;
+});
 //Import middleware and enable
 app.use(middleware);
 
@@ -32,7 +38,7 @@ app.use(middleware);
 app.use('/', routes);
 
 //Create first seed user:
-main.createTim;
+//main.createTim;
 
 // Main server listener that accepts http connections on port or localhost 3000
 const listener = app.listen(process.env.PORT || 3000, () => {
