@@ -1,0 +1,20 @@
+Front End Features:
+
+I can click a button that displays a list with all users and shows username/ids
+
+There is a button I can click to add a new user
+    *When the button is clicked a form is displayed
+    *When I add a new user the username and id are displayed as well as a confirmation message
+
+There is a button I can click to enter a new exercise log
+    *When the button is clicked the exercise log form is displayed.
+    *When I add a new exercise log a success message is displayed showing the user and the new log
+
+I can click a button that opens up a form.
+    *  The form contains a userId field and optional date range fields
+    * When the form is submitted a display shows all exercise logs for the user with the given date range
+        **If the date range is invalid or there are no logs a message is displayed.
+
+There is footer navigation linking to my homepage, github etc.
+
+The front end is dynamic and uses React.
