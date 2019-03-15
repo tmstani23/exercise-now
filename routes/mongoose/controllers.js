@@ -68,7 +68,7 @@ exports.get_users = (req, res) => {
       
     });
     //Return the user array at route
-    res.send(userArr);
+    res.send({users: userArr});
   }); 
 }
 //Function to get a user's exercise logs using url parameters
