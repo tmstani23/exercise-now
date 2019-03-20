@@ -1,10 +1,34 @@
 import React, { Component } from 'react';
 import './App.css';
 
+class ActivateUsers extends Component {
+  state = {
+    buttonClicked: false,
+  }
+  handleClick = (event) => {
+    this.setState({buttonClicked: !this.state.buttonClicked})
+  }
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClick}>Show Users</button>
+        {this.state.buttonClicked === true 
+          ? <UserList userData = {this.props.userData}/> 
+          : <p>No user data listed</p>
+
+        }
+         
+      </div>
+      
+    )
+  }
+}
 
 function UserList(props) {
+  // create a jsx list of items containing all user data
   const listItems = props.userData.map((item, index) => {
     return <ul key={index}>
+      {/* Return username and id for each user as list items*/}
       <li>Username: {item.username}</li>
       <li>User Id: {item._id}</li>
     </ul>
@@ -19,8 +43,8 @@ function UserList(props) {
 class App extends Component {
   
   state = {
-    data: [],
-    hasData: false,
+    userData: [],
+    isLoading: true,
   };
 
   componentDidMount() {
@@ -28,15 +52,8 @@ class App extends Component {
     this.callBackendApi()
       //Update the state data with the new data 
       .then(res => {
-        let returnArr = res.map(val => {
-          return val;
-        });
-        console.log(returnArr);
-        this.setState({data: returnArr});
-        this.setState({hasData: true});
-        //console.log(this.state.data[0].username)
+        this.setState({userData: res, isLoading: false });
       })
-      //try setstate > data: JSON.parse(res.users)
       .catch(err => console.log(err));
   }
 
@@ -50,20 +67,16 @@ class App extends Component {
     return body;
   }
   
-  
   render() {
-    
-  
-    
-    
     return (
       <div className="App">
         
         <p>Backend Data:</p>
-        {this.state.hasData === false 
+        {this.state.isLoading === true
           ? <p>No data yet</p>
-          : <UserList userData = {this.state.data}/>
+          : <ActivateUsers userData = {this.state.userData}/>
         }
+        
       </div>
     );
   }
