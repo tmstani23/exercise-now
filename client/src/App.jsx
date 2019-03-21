@@ -1,6 +1,30 @@
 import React, { Component } from 'react';
 import './App.css';
 
+class UserForm extends Component {
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target)
+
+    fetch('/api/exercise/add', {
+      method: 'POST',
+      body: formData,
+    })
+  }
+  render() {
+    return (
+        <div>
+          <h1>Exercise tracker</h1>
+          <form onSubmit={this.handleSubmit} method="post">
+            <h3>Create a New User</h3>
+            <input id="uname" type="text" name="username" placeholder="username"/>
+            <input type="submit" value="Submit"/>
+          </form>
+        </div>
+    )
+  }
+}
+
 class ActivateUsers extends Component {
   state = {
     buttonClicked: false,
@@ -15,9 +39,7 @@ class ActivateUsers extends Component {
         {this.state.buttonClicked === true 
           ? <UserList userData = {this.props.userData}/> 
           : <p>No user data listed</p>
-
-        }
-         
+        }   
       </div>
       
     )
@@ -76,6 +98,7 @@ class App extends Component {
           ? <p>No data yet</p>
           : <ActivateUsers userData = {this.state.userData}/>
         }
+        <UserForm />
         
       </div>
     );
