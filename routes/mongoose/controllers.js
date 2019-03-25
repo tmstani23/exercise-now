@@ -8,7 +8,7 @@ exports.post_user = (req, res) => {
     //Set new user instance of User model
     let newUser = new User({username: userInput});
     // Save the new user to the database
-    newUser.save((err, newUser) => err ? res.send({errorMessage: err.message}) : res.send({userId: newUser._id}));  
+    newUser.save((err, newUser) => err ? res.send({errorMessage: err.message}) : res.send({username:userInput, userId: newUser._id}));  
 }
 
 //Function that takes exercise form input, applies it to a user and saves as a subdocument in the db

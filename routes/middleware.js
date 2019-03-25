@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 router.use(cors())
 
 // Include bodyparser middleware for parsing message body in form posts
-router.use(bodyParser.urlencoded({extended: false}))
+router.use(bodyParser.urlencoded({extended: true}))
 router.use(bodyParser.json())
 
 //Use public folder to allow using public folderand its css file
