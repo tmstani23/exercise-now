@@ -23,14 +23,9 @@ mongoose.connect("mongodb://localhost:27017/exercise_db", function(err) {
   }
   //Log if connection was established or not
   console.log(mongoose.connection.readyState, "Mongo DB connection established");
+  //mongoose.connection.db.dropDatabase();
 });
 
-
-//Once database connection is open:
-// mongoose.connection.on('open', function(){
-//   // Delete existing documents on connection
-//   //mongoose.connection.db.dropDatabase();
-// });
 
 // convert all dates to formatted dates
 app.set('json replacer', function (key, value) {

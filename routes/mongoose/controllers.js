@@ -45,7 +45,7 @@ exports.post_exercise = (req, res) => {
         }
         else {
           console.log('Success! Exercise Added to User', user.exerciseLogs);
-          res.json({userData: user});
+          res.json({userData: user, newLog: user.exerciseLogs[user.exerciseLogs.length - 1] });
         } 
       });
     };

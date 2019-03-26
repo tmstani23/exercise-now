@@ -9,10 +9,41 @@ class ExerciseForm extends Component {
     userId: "",
     description: "",
     duration: "",
-    date: null,
+    date: "",
+    errorMsg: false,
   }
   handleSubmit = (event) => {
     // action="/api/exercise/add"
+    event.preventDefault();
+    // set error message flag in state to false
+    this.setState({errorMsg: false})
+    fetch('/api/exercise/add', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      }, 
+      body: JSON.stringify(this.state),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      // reset data returned state to false:
+      this.setState({dataReturned: false})
+      // update state with the returned data and set data returned flag to true
+      this.setState({exerciseData: data, dataReturned: !this.state.dataReturned})
+      //Call the backend api to update the userlist with the newly added user
+      //this.props.updateBackend()
+     
+    })
+    .catch(err => {
+      console.log(err);
+      if(err) {
+        this.setState({errorMsg: err})
+      }
+    })
+    
+    
+
   }
   handleChange = (event) => {
     const target = event.target;
@@ -26,6 +57,7 @@ class ExerciseForm extends Component {
   }
 
   render() {
+    
     return (
       <div>
         <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
@@ -37,7 +69,14 @@ class ExerciseForm extends Component {
             <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
             <input type="submit" value="Submit"/>
           </form>
-          <p>{this.state.userId} {this.state.date}</p>
+          {this.state.dataReturned === true
+            ? 
+              <ul>
+                <li>{this.state.exerciseData.userData.username}</li>
+                {/* <li>{this.state.exerciseData.newLog}</li> */}
+              </ul>
+            : <p>Exercise data not returned yet</p>
+          }
       </div>
     )
   }
@@ -53,8 +92,6 @@ class UserForm extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    //const inputData = new FormData(event.target)
-    console.log("clicked");
     
     fetch('/api/exercise/new-user', {
       method: 'POST',
@@ -189,7 +226,11 @@ class App extends Component {
           : <ActivateUsers userData = {this.state.userData}/>
         }
         <UserForm updateBackend = {this.updateBackendApi} />
-        <ExerciseForm />
+        
+        <ExerciseForm updateBackend = {this.updateBackendApi} />
+        
+      
+        
       </div>
     );
   }
