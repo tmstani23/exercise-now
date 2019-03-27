@@ -10,13 +10,11 @@ class ExerciseForm extends Component {
     description: "",
     duration: "",
     date: "",
-    errorMsg: false,
   }
   handleSubmit = (event) => {
     // action="/api/exercise/add"
     event.preventDefault();
-    // set error message flag in state to false
-    this.setState({errorMsg: false})
+    
     fetch('/api/exercise/add', {
       method: 'POST',
       headers: {
@@ -28,7 +26,7 @@ class ExerciseForm extends Component {
     .then(data => {
       console.log(data)
       // reset data returned state to false:
-      this.setState({dataReturned: false})
+      this.setState({dataReturned: false, exerciseData: []})
       // update state with the returned data and set data returned flag to true
       this.setState({exerciseData: data, dataReturned: !this.state.dataReturned})
       //Call the backend api to update the userlist with the newly added user
@@ -37,9 +35,6 @@ class ExerciseForm extends Component {
     })
     .catch(err => {
       console.log(err);
-      if(err) {
-        this.setState({errorMsg: err})
-      }
     })
     
     
@@ -69,13 +64,28 @@ class ExerciseForm extends Component {
             <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
             <input type="submit" value="Submit"/>
           </form>
-          {this.state.dataReturned === true
+          {/* Try checking if exerciseData != [] */}
+          
+          {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
             ? 
-              <ul>
-                <li>{this.state.exerciseData.userData.username}</li>
-                {/* <li>{this.state.exerciseData.newLog}</li> */}
+              <ul> New Exercise Log Created
+                <li>Username: {this.state.exerciseData.userData.username}</li>
+                <li>Entry UID: {this.state.exerciseData.newLog.uid}</li>
+                <li>Description: {this.state.exerciseData.newLog.description}</li>
+                <li>Duration: {this.state.exerciseData.newLog.duration}</li>
+                <li>Date: {this.state.exerciseData.newLog.date}</li>
               </ul>
             : <p>Exercise data not returned yet</p>
+          }
+          {this.state.dataReturned === true && this.state.exerciseData.errorMessage !== undefined
+            ? 
+              <ul>
+                <li>
+                  {this.state.exerciseData.errorMessage}
+                </li>
+              </ul>
+            :
+            null
           }
       </div>
     )
@@ -179,6 +189,93 @@ function UserList(props) {
   )
 }
 
+class ActivateLogs extends Component {
+  state = {
+    buttonClicked: false,
+  }
+  handleClick = (event) => {
+    this.setState({buttonClicked: !this.state.buttonClicked})
+  }
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClick}>Show User Logs</button>
+        {this.state.buttonClicked === true 
+          ? <LogForm /> 
+          : null
+        }   
+      </div>
+      
+    )
+  }
+}
+
+class LogForm extends Component {
+  
+  state = {
+    userId: '',
+    fromDate: '',
+    toDate: '',
+    limit: 5,
+    dataReturned: false,
+    logData: [],
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    
+    fetch('/api/exercise/log', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      }, 
+      body: JSON.stringify(this.state),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      // reset data returned state to false:
+      this.setState({dataReturned: false})
+      // update state with the returned data and set data returned flag to true
+      this.setState({logData: data, dataReturned: !this.state.dataReturned})
+      
+     
+    })
+    .catch(err => console.log(err))
+    
+    
+  }
+  handleChange = (event) => {
+    this.setState({username: event.target.value})
+    
+  }
+
+  render() {
+    return (
+        <div>
+          <h1>Exercise tracker</h1>
+          <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
+            <h3>Create a New User</h3>
+            <input id="uid" type="text" name="userId" placeholder="User Id"/>
+            <input id="from" type="text" name="fromDate" placeholder="From date (yyyy/mm/dd)"/>
+            <input id="to" type="text" name="toDate" placeholder="To date (yyyy/mm/dd)"/>
+            <input type="submit" value="Submit"/>
+          </form>
+          {this.state.dataReturned===true 
+            ? <ul>
+                <li>{this.state.logData.userId}</li>
+                
+            </ul>
+            : <p>Loading Log Data</p>
+          }
+        </div>
+
+    )
+  }
+}
+
+
+
 class App extends Component {
   
   state = {
@@ -227,9 +324,9 @@ class App extends Component {
         }
         <UserForm updateBackend = {this.updateBackendApi} />
         
-        <ExerciseForm updateBackend = {this.updateBackendApi} />
+        <ExerciseForm />
         
-      
+        <ActivateLogs />
         
       </div>
     );

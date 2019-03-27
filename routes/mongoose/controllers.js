@@ -41,7 +41,7 @@ exports.post_exercise = (req, res) => {
       user.save(function (err) {
         if (err) {
           console.log(err);
-          res.send({errorMessage: err.message});
+          
         }
         else {
           console.log('Success! Exercise Added to User', user.exerciseLogs);
@@ -58,7 +58,7 @@ exports.get_users = (req, res) => {
   // Find any user
   User.find({}, (err, users) => {
     if(err) {
-      console.log(err);
+      res.send({errorMessage: err})
     }
     let userArr = [];
     // Add each user to the user array
@@ -71,12 +71,13 @@ exports.get_users = (req, res) => {
     res.send(userArr);
   }); 
 }
+
 //Function to get a user's exercise logs using url parameters
 exports.get_user_exercise_log = (req, res) => {
   //Save url parameters as variables for use
-  let userId = req.param('userId');
-  let fromDate = req.param('from') || "";
-  let toDate = req.param('to') || "";
+  let userId = req.body.userId;
+  let fromDate = req.body.fromDate || "";
+  let toDate = req.body.toDate || "";
   //Search User collection by input id
   User.findById(userId, (err,user) => {
     if(err) {
@@ -92,7 +93,7 @@ exports.get_user_exercise_log = (req, res) => {
         }
         //Send an error message if there are no results
         if(result.length == 0) {
-          res.send("No results matched your search.  Try different search parameters.")
+          res.send({errorMessage: "No results matched your search.  Try different search parameters."})
         }
         //Send the result logs as json
         res.json(result);
