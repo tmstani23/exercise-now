@@ -64,7 +64,7 @@ class ExerciseForm extends Component {
             <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
             <input type="submit" value="Submit"/>
           </form>
-          {/* Try checking if exerciseData != [] */}
+          
           
           {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
             ? 
@@ -213,9 +213,9 @@ class ActivateLogs extends Component {
 class LogForm extends Component {
   
   state = {
-    userId: '',
-    fromDate: '',
-    toDate: '',
+    userId: "",
+    fromDate: false,
+    toDate: false,
     limit: 5,
     dataReturned: false,
     logData: [],
@@ -235,43 +235,71 @@ class LogForm extends Component {
     .then(data => {
       console.log(data)
       // reset data returned state to false:
-      this.setState({dataReturned: false})
+      this.setState({dataReturned: false, logData: []})
       // update state with the returned data and set data returned flag to true
       this.setState({logData: data, dataReturned: !this.state.dataReturned})
       
      
     })
-    .catch(err => console.log(err))
-    
-    
+    .catch(err => console.log(err)
+    )
   }
+
   handleChange = (event) => {
-    this.setState({username: event.target.value})
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
     
   }
 
   render() {
     return (
         <div>
-          <h1>Exercise tracker</h1>
+          <h1>Find All Exercise Logs</h1>
           <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h3>Create a New User</h3>
+            <h3>Find By User Id: {this.state.userId}</h3>
             <input id="uid" type="text" name="userId" placeholder="User Id"/>
             <input id="from" type="text" name="fromDate" placeholder="From date (yyyy/mm/dd)"/>
             <input id="to" type="text" name="toDate" placeholder="To date (yyyy/mm/dd)"/>
             <input type="submit" value="Submit"/>
           </form>
-          {this.state.dataReturned===true 
-            ? <ul>
-                <li>{this.state.logData.userId}</li>
-                
-            </ul>
+          {this.state.dataReturned===true && this.state.logData.errorMessage === undefined
+            ? <LogResults userData = {this.state.logData.userData} />
+            // <p>{this.state.logData.userData.exerciseCount}</p>
+             
             : <p>Loading Log Data</p>
           }
         </div>
 
     )
   }
+}
+
+function LogResults(props) {
+  let username = props.userData.username;
+  let count = props.userData.exerciseCount;
+  let exerciseLogs = props.userData.exerciseLogs
+  // create a jsx list of items containing all user data
+  const listItems = exerciseLogs.map((item, index) => {
+    return <ul key={index}>
+      {/* Return username and id for each user as list items*/}
+      <li>Log Id: {item._id}</li>
+      <li>Log Description: {item.description}</li>
+      <li>Exercise Duration (minutes): {item.duration}</li>
+      <li>Date of Exercise: {item.date}</li>
+    </ul>
+  })
+  return (
+    <div>
+     <h3>All Exercise logs for {username}:</h3>
+      <h4>Number of entries: {count}</h4>
+      {listItems}
+    </div>
+  )
 }
 
 
@@ -327,6 +355,7 @@ class App extends Component {
         <ExerciseForm />
         
         <ActivateLogs />
+        
         
       </div>
     );

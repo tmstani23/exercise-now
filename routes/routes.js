@@ -13,6 +13,6 @@ router.post("/api/exercise/add", controllers.post_exercise);
 router.get("/api/exercise/users", controllers.get_users);
 
 //Route that displays exercise logs for a specific user
-router.get("/api/exercise/log", controllers.get_user_exercise_log);
+router.post("/api/exercise/log", controllers.get_user_exercise_log);
 
 module.exports = router

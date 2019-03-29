@@ -76,33 +76,38 @@ exports.get_users = (req, res) => {
 exports.get_user_exercise_log = (req, res) => {
   //Save url parameters as variables for use
   let userId = req.body.userId;
-  let fromDate = req.body.fromDate || "";
-  let toDate = req.body.toDate || "";
+  
   //Search User collection by input id
   User.findById(userId, (err,user) => {
+    let fromDate = req.body.fromDate;
+    let toDate = req.body.toDate;
+    
     if(err) {
       console.log(err);
       res.send({errorMessage: err.message});
     }
     //If from and to date fields are not empty
-    else if(fromDate && toDate != "") {
+    else if(fromDate != false && toDate != false) {
+      console.log("from-to not empty")
       //Search Log db collection for fields matching the date range and uid
       Log.find({uid: userId, date: { $gte: fromDate, $lte: toDate }}, (err,result) => {
         if(err) {
           console.log(err);
         }
         //Send an error message if there are no results
-        if(result.length == 0) {
+        if(result.length == 0 && result !== undefined) {
           res.send({errorMessage: "No results matched your search.  Try different search parameters."})
         }
         //Send the result logs as json
-        res.json(result);
+        res.json({userData: result});
      })
     }
     //Else if there is no errors or date range:
     else {
       //Send the complete user object as json
+      console.log("no errors, no date range");
       res.json({userData: user});
+      
     };
   });
   
