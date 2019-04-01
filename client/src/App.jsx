@@ -139,12 +139,20 @@ class UserForm extends Component {
             <input id="uname" type="text" name="username" placeholder="username"/>
             <input type="submit" value="Submit"/>
           </form>
-          {this.state.dataReturned===true 
+          {this.state.dataReturned===true && this.state.userData.errorMessage === undefined
             ? <ul>
                 <li>{this.state.userData.username}</li>
                 <li>{this.state.userData.userId}</li>
             </ul>
-            : <p>new user not yet created</p>
+            : null
+          }
+          {this.state.dataReturned === true && this.state.userData.errorMessage !== undefined
+            ? <p>{this.state.userData.errorMessage}</p>
+            : null
+          }
+          {this.state.dataReturned !== true
+            ? <p>Loading Data</p>
+            : null
           }
         </div>
 
@@ -214,8 +222,8 @@ class LogForm extends Component {
   
   state = {
     userId: "",
-    fromDate: false,
-    toDate: false,
+    fromDate: "",
+    toDate: "",
     limit: 5,
     dataReturned: false,
     logData: [],
@@ -272,6 +280,10 @@ class LogForm extends Component {
             // <p>{this.state.logData.userData.exerciseCount}</p>
              
             : <p>Loading Log Data</p>
+          }
+          {this.state.logData.errorMessage !== undefined
+            ? <p>{this.state.logData.errorMessage}</p>
+            : null
           }
         </div>
 

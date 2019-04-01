@@ -58,7 +58,7 @@ exports.get_users = (req, res) => {
   // Find any user
   User.find({}, (err, users) => {
     if(err) {
-      res.send({errorMessage: err})
+      return res.send({errorMessage: err})
     }
     let userArr = [];
     // Add each user to the user array
@@ -68,7 +68,7 @@ exports.get_users = (req, res) => {
       
     });
     //Return the user array at route
-    res.send(userArr);
+    return res.send(userArr);
   }); 
 }
 
@@ -84,22 +84,25 @@ exports.get_user_exercise_log = (req, res) => {
     
     if(err) {
       console.log(err);
-      res.send({errorMessage: err.message});
+      return res.send({errorMessage: err.message});
     }
     //If from and to date fields are not empty
-    else if(fromDate != false && toDate != false) {
-      console.log("from-to not empty")
+    else if(fromDate != "" || toDate != "") {
+      
       //Search Log db collection for fields matching the date range and uid
       Log.find({uid: userId, date: { $gte: fromDate, $lte: toDate }}, (err,result) => {
         if(err) {
-          console.log(err);
+          return res.send({errorMessage: err.message});
         }
         //Send an error message if there are no results
-        if(result.length == 0 && result !== undefined) {
-          res.send({errorMessage: "No results matched your search.  Try different search parameters."})
+       else if(result.length == 0 && result !== undefined) {
+          return res.send({errorMessage: "No results matched your search.  Try different search parameters."})
         }
-        //Send the result logs as json
-        res.json({userData: result});
+        else {
+          //Send the result logs as json
+          return res.json({userData: result});
+        }
+        
      })
     }
     //Else if there is no errors or date range:
