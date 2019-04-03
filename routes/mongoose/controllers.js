@@ -100,7 +100,7 @@ exports.get_user_exercise_log = (req, res) => {
         }
         else {
           //Send the result logs as json
-          return res.json({userData: result});
+          return res.json({userData: {exerciseLogs: result}});
         }
         
      })
@@ -108,7 +108,6 @@ exports.get_user_exercise_log = (req, res) => {
     //Else if there is no errors or date range:
     else {
       //Send the complete user object as json
-      console.log("no errors, no date range");
       res.json({userData: user});
       
     };

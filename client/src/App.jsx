@@ -4,7 +4,7 @@ import './App.css';
 
 class ExerciseForm extends Component {
   state = {
-    dataReturned: false,
+    dataReturned: null,
     exerciseData: [],
     userId: "",
     description: "",
@@ -75,7 +75,7 @@ class ExerciseForm extends Component {
                 <li>Duration: {this.state.exerciseData.newLog.duration}</li>
                 <li>Date: {this.state.exerciseData.newLog.date}</li>
               </ul>
-            : <p>Exercise data not returned yet</p>
+            : null
           }
           {this.state.dataReturned === true && this.state.exerciseData.errorMessage !== undefined
             ? 
@@ -87,6 +87,11 @@ class ExerciseForm extends Component {
             :
             null
           }
+          {
+            this.state.dataReturned === false
+              ? <Loading />
+              : null
+          }
       </div>
     )
   }
@@ -96,7 +101,7 @@ class UserForm extends Component {
   
   state = {
     username: '',
-    dataReturned: false,
+    dataReturned: null,
     userData: [],
   }
 
@@ -133,7 +138,6 @@ class UserForm extends Component {
   render() {
     return (
         <div>
-          <h1>Exercise tracker</h1>
           <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
             <h3>Create a New User</h3>
             <input id="uname" type="text" name="username" placeholder="username"/>
@@ -150,8 +154,8 @@ class UserForm extends Component {
             ? <p>{this.state.userData.errorMessage}</p>
             : null
           }
-          {this.state.dataReturned !== true
-            ? <p>Loading Data</p>
+          {this.state.dataReturned === false
+            ? <Loading />
             : null
           }
         </div>
@@ -173,7 +177,7 @@ class ActivateUsers extends Component {
         <button onClick={this.handleClick}>Show Users</button>
         {this.state.buttonClicked === true 
           ? <UserList userData = {this.props.userData}/> 
-          : <p>No user data listed</p>
+          : null
         }   
       </div>
       
@@ -225,7 +229,7 @@ class LogForm extends Component {
     fromDate: "",
     toDate: "",
     limit: 5,
-    dataReturned: false,
+    dataReturned: null,
     logData: [],
   }
 
@@ -277,12 +281,15 @@ class LogForm extends Component {
           </form>
           {this.state.dataReturned===true && this.state.logData.errorMessage === undefined
             ? <LogResults userData = {this.state.logData.userData} />
-            // <p>{this.state.logData.userData.exerciseCount}</p>
              
-            : <p>Loading Log Data</p>
+            : null
           }
           {this.state.logData.errorMessage !== undefined
             ? <p>{this.state.logData.errorMessage}</p>
+            : null
+          }
+          {this.state.dataReturned === false
+            ? <Loading />
             : null
           }
         </div>
@@ -315,6 +322,33 @@ function LogResults(props) {
 }
 
 
+//Component to handle loading states when fetching data:
+class Loading extends React.Component {
+  constructor(props) {
+      super(props);
+      this.state = {
+      text: 'Loading'
+      };
+  }
+  componentDidMount() {
+      const stopper = this.state.text + '...';
+      this.interval = window.setInterval(() => {
+      this.state.text === stopper
+          ? this.setState(() => ({ text: 'Loading' }))
+          : this.setState((prevState) => ({ text: prevState.text + '.' }))
+      }, 300)
+  }
+  componentWillUnmount() {
+      window.clearInterval(this.interval);
+  }
+  render() {
+      return (
+      <p>
+          {this.state.text}
+      </p>
+      )
+  }
+}
 
 class App extends Component {
   
