@@ -1,166 +1,57 @@
 import React, { Component } from 'react';
 import './App.css';
 
-
-class ExerciseForm extends Component {
-  state = {
-    dataReturned: null,
-    exerciseData: [],
-    userId: "",
-    description: "",
-    duration: "",
-    date: "",
-  }
-  handleSubmit = (event) => {
-    // action="/api/exercise/add"
-    event.preventDefault();
-    
-    fetch('/api/exercise/add', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      }, 
-      body: JSON.stringify(this.state),
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-      // reset data returned state to false:
-      this.setState({dataReturned: false, exerciseData: []})
-      // update state with the returned data and set data returned flag to true
-      this.setState({exerciseData: data, dataReturned: !this.state.dataReturned})
-      //Call the backend api to update the userlist with the newly added user
-      //this.props.updateBackend()
-     
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    
-    
-
-  }
-  handleChange = (event) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-    
-  }
-
-  render() {
-    
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h3>Add exercises</h3>
-            <p><code>POST /api/exercise/add</code></p>
-            <input id="uid" type="text" name="userId" placeholder="userId*"/>
-            <input id="desc" type="text" name="description" placeholder="description*"/>
-            <input id="dur" type="text" name="duration" placeholder="duration* (mins.)"/>
-            <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
-            <input type="submit" value="Submit"/>
-          </form>
-          
-          
-          {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
-            ? 
-              <ul> New Exercise Log Created
-                <li>Username: {this.state.exerciseData.userData.username}</li>
-                <li>Entry UID: {this.state.exerciseData.newLog.uid}</li>
-                <li>Description: {this.state.exerciseData.newLog.description}</li>
-                <li>Duration: {this.state.exerciseData.newLog.duration}</li>
-                <li>Date: {this.state.exerciseData.newLog.date}</li>
-              </ul>
-            : null
-          }
-          {this.state.dataReturned === true && this.state.exerciseData.errorMessage !== undefined
-            ? 
-              <ul>
-                <li>
-                  {this.state.exerciseData.errorMessage}
-                </li>
-              </ul>
-            :
-            null
-          }
-          {
-            this.state.dataReturned === false
-              ? <Loading />
-              : null
-          }
-      </div>
-    )
-  }
-}
-
-class UserForm extends Component {
+class App extends Component {
   
   state = {
-    username: '',
-    dataReturned: null,
     userData: [],
+    isLoading: true,
+  };
+
+  componentDidMount() {
+    this.updateBackendApi()
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    
-    fetch('/api/exercise/new-user', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json'
-      }, 
-      body: JSON.stringify(this.state),
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-      // reset data returned state to false:
-      this.setState({dataReturned: false})
-      // update state with the returned data and set data returned flag to true
-      this.setState({userData: data, dataReturned: !this.state.dataReturned})
-      //Call the backend api to update the userlist with the newly added user
-      this.props.updateBackend()
-     
-    })
-    .catch(err => console.log(err))
-    
-    
-  }
-  handleChange = (event) => {
-    this.setState({username: event.target.value})
-    
+  updateBackendApi = () => {
+     //Get data from the backend api server
+     this.callBackendApi()
+     //Update the state data with the new data 
+     .then(res => {
+       this.setState({userData: res, isLoading: false });
+     })
+     .catch(err => console.log(err));
   }
 
+  callBackendApi = async () => {
+    const response = await fetch('/api/exercise/users');
+    const body = await response.json();
+
+    if (response.status !== 200) {
+      return (
+        <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
+      )
+    }
+    return body;
+  }
+  
   render() {
     return (
-        <div>
-          <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h3>Create a New User</h3>
-            <input id="uname" type="text" name="username" placeholder="username"/>
-            <input type="submit" value="Submit"/>
-          </form>
-          {this.state.dataReturned===true && this.state.userData.errorMessage === undefined
-            ? <ul>
-                <li>{this.state.userData.username}</li>
-                <li>{this.state.userData.userId}</li>
-            </ul>
-            : null
-          }
-          {this.state.dataReturned === true && this.state.userData.errorMessage !== undefined
-            ? <p>{this.state.userData.errorMessage}</p>
-            : null
-          }
-          {this.state.dataReturned === false
-            ? <Loading />
-            : null
-          }
-        </div>
-
-    )
+      <div className="App">
+        
+        <h1>All Users</h1>
+        {this.state.isLoading === true
+          ? <Loading />
+          : <ActivateUsers userData = {this.state.userData}/>
+        }
+        <UserForm updateBackend = {this.updateBackendApi} />
+        
+        <ExerciseForm />
+        
+        <ActivateLogs />
+        
+        
+      </div>
+    );
   }
 }
 
@@ -201,6 +92,163 @@ function UserList(props) {
   )
 }
 
+class UserForm extends Component {
+  
+  state = {
+    username: '',
+    dataReturned: null,
+    userData: [],
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    // reset data returned state to false:
+    this.setState({dataReturned: false})
+
+    fetch('/api/exercise/new-user', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      }, 
+      body: JSON.stringify(this.state),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      
+      // update state with the returned data and set data returned flag to true
+      this.setState({userData: data, dataReturned: !this.state.dataReturned});
+      //Call the backend api to update the userlist with the newly added user
+      this.props.updateBackend();
+     
+    })
+    .catch(err => console.log(err))
+    
+    
+  }
+  handleChange = (event) => {
+    this.setState({username: event.target.value})
+    
+  }
+
+  render() {
+    return (
+        <div>
+          <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
+            <h3>Create a New User</h3>
+            <input id="uname" type="text" name="username" placeholder="username"/>
+            <input type="submit" value="Submit"/>
+          </form>
+          {this.state.dataReturned===true && this.state.userData.errorMessage === undefined
+            ? <ul>
+                <li>{this.state.userData.username}</li>
+                <li>{this.state.userData.userId}</li>
+            </ul>
+            : null
+          }
+          {this.state.dataReturned === true && this.state.userData.errorMessage !== undefined
+            ? <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
+            : null
+          }
+          {this.state.dataReturned === false
+            ? <Loading />
+            : null
+          }
+        </div>
+
+    )
+  }
+}
+
+class ExerciseForm extends Component {
+  state = {
+    dataReturned: null,
+    exerciseData: [],
+    userId: "",
+    description: "",
+    duration: "",
+    date: "",
+  }
+  handleSubmit = (event) => {
+    // action="/api/exercise/add"
+    event.preventDefault();
+    // reset data returned state to false:
+    this.setState({dataReturned: false, exerciseData: []})
+    
+    fetch('/api/exercise/add', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      }, 
+      body: JSON.stringify(this.state),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      // update state with the returned data and set data returned flag to true
+      this.setState({exerciseData: data, dataReturned: !this.state.dataReturned})
+      //Call the backend api to update the userlist with the newly added user
+      this.props.updateBackend()
+     
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
+
+  handleChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+    
+  }
+
+  render() {
+    
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
+            <h3>Add exercises</h3>
+            <p><code>POST /api/exercise/add</code></p>
+            <input id="uid" type="text" name="userId" placeholder="userId*"/>
+            <input id="desc" type="text" name="description" placeholder="description*"/>
+            <input id="dur" type="text" name="duration" placeholder="duration* (mins.)"/>
+            <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
+            <input type="submit" value="Submit"/>
+          </form>
+          
+          
+          {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
+            ? 
+              <ul> New Exercise Log Created
+                <li>Username: {this.state.exerciseData.userData.username}</li>
+                <li>Entry UID: {this.state.exerciseData.newLog.uid}</li>
+                <li>Description: {this.state.exerciseData.newLog.description}</li>
+                <li>Duration: {this.state.exerciseData.newLog.duration}</li>
+                <li>Date: {this.state.exerciseData.newLog.date}</li>
+              </ul>
+            : null
+          }
+          {this.state.dataReturned === true && this.state.exerciseData.errorMessage !== undefined
+            ? <DisplayErrors errorMessage = {this.state.exerciseData.errorMessage}/>
+            : null
+          }
+          {
+            this.state.dataReturned === false
+              ? <Loading />
+              : null
+          }
+      </div>
+    )
+  }
+}
+
+
+
 class ActivateLogs extends Component {
   state = {
     buttonClicked: false,
@@ -235,7 +283,9 @@ class LogForm extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    
+    // reset data returned state to false:
+    this.setState({dataReturned: false, logData: []})
+
     fetch('/api/exercise/log', {
       method: 'POST',
       headers: {
@@ -246,8 +296,7 @@ class LogForm extends Component {
     .then(res => res.json())
     .then(data => {
       console.log(data)
-      // reset data returned state to false:
-      this.setState({dataReturned: false, logData: []})
+      
       // update state with the returned data and set data returned flag to true
       this.setState({logData: data, dataReturned: !this.state.dataReturned})
       
@@ -285,7 +334,8 @@ class LogForm extends Component {
             : null
           }
           {this.state.logData.errorMessage !== undefined
-            ? <p>{this.state.logData.errorMessage}</p>
+            
+            ? <DisplayErrors errorMessage = {this.state.logData.errorMessage} />
             : null
           }
           {this.state.dataReturned === false
@@ -350,62 +400,14 @@ class Loading extends React.Component {
   }
 }
 
-class App extends Component {
+function DisplayErrors(props) {
   
-  state = {
-    userData: [],
-    isLoading: true,
-  };
-
-  componentDidMount() {
-    //Get data from the backend api server
-    this.callBackendApi()
-      //Update the state data with the new data 
-      .then(res => {
-        this.setState({userData: res, isLoading: false });
-      })
-      .catch(err => console.log(err));
-  }
-
-  updateBackendApi = () => {
-     //Get data from the backend api server
-     this.callBackendApi()
-     //Update the state data with the new data 
-     .then(res => {
-       this.setState({userData: res, isLoading: false });
-     })
-     .catch(err => console.log(err));
-  }
-
-  callBackendApi = async () => {
-    const response = await fetch('/api/exercise/users');
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message)
-    }
-    return body;
-  }
-  
-  render() {
     return (
-      <div className="App">
-        
-        <p>Backend Data:</p>
-        {this.state.isLoading === true
-          ? <p>No data yet</p>
-          : <ActivateUsers userData = {this.state.userData}/>
-        }
-        <UserForm updateBackend = {this.updateBackendApi} />
-        
-        <ExerciseForm />
-        
-        <ActivateLogs />
-        
-        
-      </div>
-    );
-  }
+      <p>
+        {props.errorMessage}
+      </p>
+    )
+  
 }
 
 export default App;
