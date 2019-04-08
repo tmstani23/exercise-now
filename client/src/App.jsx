@@ -36,9 +36,9 @@ class App extends Component {
   
   render() {
     return (
-      <div className="App">
+      <div className="container">
         
-        <h1>All Users</h1>
+        
         {this.state.isLoading === true
           ? <Loading />
           : <ActivateUsers userData = {this.state.userData}/>
@@ -64,7 +64,8 @@ class ActivateUsers extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="col1">
+        <h1>All Users</h1>
         <button onClick={this.handleClick}>Show Users</button>
         {this.state.buttonClicked === true 
           ? <UserList userData = {this.props.userData}/> 
@@ -133,9 +134,9 @@ class UserForm extends Component {
 
   render() {
     return (
-        <div>
+        <div className="col2">
           <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h3>Create a New User</h3>
+            <h1>Create a New User</h1>
             <input id="uname" type="text" name="username" placeholder="username"/>
             <input type="submit" value="Submit"/>
           </form>
@@ -210,10 +211,9 @@ class ExerciseForm extends Component {
   render() {
     
     return (
-      <div>
+      <div className="col3">
         <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h3>Add exercises</h3>
-            <p><code>POST /api/exercise/add</code></p>
+            <h1>Add exercises</h1>
             <input id="uid" type="text" name="userId" placeholder="userId*"/>
             <input id="desc" type="text" name="description" placeholder="description*"/>
             <input id="dur" type="text" name="duration" placeholder="duration* (mins.)"/>
@@ -258,7 +258,7 @@ class ActivateLogs extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="col4">
         <button onClick={this.handleClick}>Show User Logs</button>
         {this.state.buttonClicked === true 
           ? <LogForm /> 
@@ -320,7 +320,7 @@ class LogForm extends Component {
   render() {
     return (
         <div>
-          <h1>Find All Exercise Logs</h1>
+          <h1>Find Exercise Logs</h1>
           <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
             <h3>Find By User Id: {this.state.userId}</h3>
             <input id="uid" type="text" name="userId" placeholder="User Id"/>
