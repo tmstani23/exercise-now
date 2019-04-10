@@ -259,10 +259,11 @@ class ActivateLogs extends Component {
   render() {
     return (
       <div className="col4">
-        <button onClick={this.handleClick}>Show User Logs</button>
+        <h1>Find Exercise Logs</h1>
+        <button onClick={this.handleClick}>Show/Hide User Logs</button>
         {this.state.buttonClicked === true 
-          ? <LogForm /> 
-          : null
+          ? null
+          : <LogForm /> 
         }   
       </div>
       
@@ -320,12 +321,13 @@ class LogForm extends Component {
   render() {
     return (
         <div>
-          <h1>Find Exercise Logs</h1>
+          
           <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
             <h3>Find By User Id: {this.state.userId}</h3>
             <input id="uid" type="text" name="userId" placeholder="User Id"/>
             <input id="from" type="text" name="fromDate" placeholder="From date (yyyy/mm/dd)"/>
             <input id="to" type="text" name="toDate" placeholder="To date (yyyy/mm/dd)"/>
+            <input id="lim" type="number" name="limit" placeholder="Limit 5"/>
             <input type="submit" value="Submit"/>
           </form>
           {this.state.dataReturned===true && this.state.logData.errorMessage === undefined

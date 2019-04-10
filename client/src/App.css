@@ -10,6 +10,16 @@
   border: solid 1px black
 }
 
+.banner-div {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.footer {
+  margin: 0 auto;
+  text-align: center;
+}
+
 input {
   width: 150px;
   margin: 5px;
