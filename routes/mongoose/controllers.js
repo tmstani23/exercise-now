@@ -81,7 +81,7 @@ exports.get_user_exercise_log = (req, res) => {
   User.findById(userId, (err,user) => {
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
-    let limit = req.body.limit;
+    let limit = Number(req.body.limit);
     console.log(typeof limit)
     if(err) {
       console.log(err);
@@ -112,10 +112,22 @@ exports.get_user_exercise_log = (req, res) => {
     //Else if there is no errors or date range:
     else {
       //Send the complete user object as json
-      res.json({userData: user});
-      
-    };
-  });
-  
+      //res.json({userData: user});
+      Log.find({uid: userId})
+      .limit(limit)
+      .exec((err,result) => {
+        if(err) {
+          return res.send({errorMessage: err.message});
+        }
+        //Send an error message if there are no results
+        else if(result.length == 0 && result !== undefined) {
+          return res.send({errorMessage: "No results matched your search.  Try different search parameters."})
+        }
+        else {
+          //Send the result logs as json
+          return res.json( { userData: {exerciseLogs: result} });
+        }
+      })
+    }
+  })
 }
-
