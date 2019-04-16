@@ -55,21 +55,39 @@ exports.post_exercise = (req, res) => {
 
 //Function that displays all users in the database
 exports.get_users = (req, res) => {
+  let limit = req.body.limit;
+  let skip = req.body.skip;
+  let totalResults = req.body.totalResults;
+  
+  if(skip < totalResults) {
+    skip = skip + limit;
+    
+  }
+  else if (skip >= totalResults && totalResults != 0) {
+    skip = totalResults - limit;
+  }
+
+  console.log(skip, limit, totalResults);
   // Find any user
-  User.find({}, (err, users) => {
-    if(err) {
-      return res.send({errorMessage: err})
-    }
-    let userArr = [];
-    // Add each user to the user array
-    users.forEach( user => {
-        let {username, _id} = user
-        userArr.push({username, _id});
-      
-    });
-    //Return the user array at route
-    return res.send(userArr);
-  }); 
+  User.find({})
+    .limit(limit)
+    .skip(skip)
+    .exec((err,users) => {
+      if(err) {
+        return res.send({errorMessage: err})
+      }
+      //console.log(users);
+      let userArr = [];
+      let userCount = users.length;
+      // Add each user to the user array
+      users.forEach( user => {
+          let {username, _id} = user
+          userArr.push({username, _id});
+      });
+      //Return the user array at route
+      return res.send({userArr: userArr, totalResults: userCount});
+      //return res.send(userArr);
+    }) 
 }
 
 //Function to get a user's exercise logs using url parameters

@@ -6,6 +6,9 @@ class App extends Component {
   state = {
     userData: [],
     isLoading: true,
+    limit: 5,
+    skip: 0,
+    totalResults: 0,
   };
 
   componentDidMount() {
@@ -13,17 +16,34 @@ class App extends Component {
   }
 
   updateBackendApi = () => {
-     //Get data from the backend api server
+     
+    
+      let skip = this.state.skip;
+      //let totalResults = this.state.totalResults;
+      //let limit = this.state.limit;
+     
+
+    
+    
+    //Get data from the backend api server
      this.callBackendApi()
      //Update the state data with the new data 
      .then(res => {
-       this.setState({userData: res, isLoading: false });
-     })
+       this.setState({userData: res.userArr, isLoading: false, skip: skip, totalResults: res.totalResults });
+      console.log(JSON.stringify(this.state));
+      })
      .catch(err => console.log(err));
   }
 
   callBackendApi = async () => {
-    const response = await fetch('/api/exercise/users');
+    //const response = await fetch('/api/exercise/users');
+    const response = await fetch('/api/exercise/users', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      }, 
+      body: JSON.stringify(this.state),
+    })
     const body = await response.json();
 
     if (response.status !== 200) {
@@ -41,7 +61,7 @@ class App extends Component {
         
         {this.state.isLoading === true
           ? <Loading />
-          : <ActivateUsers userData = {this.state.userData}/>
+          : <ActivateUsers userData = {this.state.userData} updateBackend = {this.updateBackendApi}/>
         }
         <UserForm updateBackend = {this.updateBackendApi} />
         
@@ -68,7 +88,7 @@ class ActivateUsers extends Component {
         <h1>All Users</h1>
         <button onClick={this.handleClick}>Show Users</button>
         {this.state.buttonClicked === true 
-          ? <UserList userData = {this.props.userData}/> 
+          ? <UserList userData = {this.props.userData} updateBackend = {this.props.updateBackend}/> 
           : null
         }   
       </div>
@@ -89,6 +109,7 @@ function UserList(props) {
   return (
     <div>
       {listItems}
+      <button onClick={props.updateBackend}>More Results</button>
     </div>
   )
 }
@@ -99,6 +120,7 @@ class UserForm extends Component {
     username: '',
     dataReturned: null,
     userData: [],
+    
   }
 
   handleSubmit = (event) => {
@@ -115,7 +137,8 @@ class UserForm extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
+      
+      
       
       // update state with the returned data and set data returned flag to true
       this.setState({userData: data, dataReturned: !this.state.dataReturned});
