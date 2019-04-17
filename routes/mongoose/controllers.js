@@ -58,14 +58,27 @@ exports.get_users = (req, res) => {
   let limit = req.body.limit;
   let skip = req.body.skip;
   let totalResults = req.body.totalResults;
-  
-  if(skip < totalResults) {
+
+  User.find({})
+  .countDocuments((err, count) => {
+    if(err) {
+      console.log(err)
+    }
+    console.log(count, "total count");
+    totalResults = count;
+  })
+  //const userCount = User.estimatedDocumentCount().exec((err, count) => {return count});
+  //console.log(userCount, "user count");
+
+  if(skip + limit < totalResults) {
     skip = skip + limit;
     
   }
-  else if (skip >= totalResults && totalResults != 0) {
+  else if (skip + limit >= totalResults && totalResults != 0) {
     skip = totalResults - limit;
   }
+
+  
 
   console.log(skip, limit, totalResults);
   // Find any user
@@ -85,7 +98,7 @@ exports.get_users = (req, res) => {
           userArr.push({username, _id});
       });
       //Return the user array at route
-      return res.send({userArr: userArr, totalResults: userCount});
+      return res.send({userArr: userArr, skip: skip, totalResults: totalResults});
       //return res.send(userArr);
     }) 
 }

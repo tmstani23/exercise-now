@@ -18,7 +18,7 @@ class App extends Component {
   updateBackendApi = () => {
      
     
-      let skip = this.state.skip;
+      //let skip = this.state.skip;
       //let totalResults = this.state.totalResults;
       //let limit = this.state.limit;
      
@@ -29,7 +29,7 @@ class App extends Component {
      this.callBackendApi()
      //Update the state data with the new data 
      .then(res => {
-       this.setState({userData: res.userArr, isLoading: false, skip: skip, totalResults: res.totalResults });
+       this.setState({userData: res.userArr, isLoading: false, skip: res.skip, totalResults: res.totalResults });
       console.log(JSON.stringify(this.state));
       })
      .catch(err => console.log(err));
