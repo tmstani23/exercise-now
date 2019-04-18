@@ -9,50 +9,89 @@ class App extends Component {
     limit: 5,
     skip: 0,
     totalResults: 0,
+    prevResults: false,
   };
 
   componentDidMount() {
-    this.updateBackendApi()
+    this.updateBackendApi(false)
   }
+
+  // updateBackendApi = () => {
+    
+  //   //Get data from the backend api server
+  //    this.callBackendApi()
+  //    //Update the state data with the new data 
+  //    .then(res => {
+  //      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, totalResults: res.totalResults });
+  //     console.log(JSON.stringify(this.state));
+  //     })
+  //    .catch(err => console.log(err));
+  // }
+
+  // callBackendApi = async () => {
+  //   //const response = await fetch('/api/exercise/users');
+  //   const response = await fetch('/api/exercise/users', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-type': 'application/json'
+  //     }, 
+  //     body: JSON.stringify(this.state),
+  //   })
+  //   const body = await response.json();
+
+  //   if (response.status !== 200) {
+  //     return (
+  //       <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
+  //     )
+  //   }
+  //   return body;
+  // }
+  handlePrevResultsClick = () => {
+    this.setState({prevResults: true});
+    this.updateBackendApi();
+  } 
+
+ 
+
 
   updateBackendApi = () => {
-     
-    
-      //let skip = this.state.skip;
-      //let totalResults = this.state.totalResults;
-      //let limit = this.state.limit;
-     
-
-    
-    
+    //console.log(skipInput, "skipinput")
     //Get data from the backend api server
-     this.callBackendApi()
-     //Update the state data with the new data 
-     .then(res => {
-       this.setState({userData: res.userArr, isLoading: false, skip: res.skip, totalResults: res.totalResults });
-      console.log(JSON.stringify(this.state));
-      })
-     .catch(err => console.log(err));
-  }
-
-  callBackendApi = async () => {
-    //const response = await fetch('/api/exercise/users');
-    const response = await fetch('/api/exercise/users', {
+     //this.callBackendApi()
+     fetch('/api/exercise/users', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json'
       }, 
       body: JSON.stringify(this.state),
     })
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      return (
-        <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
-      )
-    }
-    return body;
+    .then(res => res.json())
+     //Update the state data with the new data 
+    .then(res => {
+      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, prevResults: res.prevResults, totalResults: res.totalResults });
+      console.log(JSON.stringify(this.state));
+      })
+    .catch(err => console.log(err));
   }
+
+  // callBackendApi = async () => {
+  //   //const response = await fetch('/api/exercise/users');
+  //   const response = await fetch('/api/exercise/users', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-type': 'application/json'
+  //     }, 
+  //     body: JSON.stringify(this.state),
+  //   })
+  //   const body = await response.json();
+
+  //   if (response.status !== 200) {
+  //     return (
+  //       <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
+  //     )
+  //   }
+  //   return body;
+  // }
   
   render() {
     return (
@@ -61,7 +100,7 @@ class App extends Component {
         
         {this.state.isLoading === true
           ? <Loading />
-          : <ActivateUsers userData = {this.state.userData} updateBackend = {this.updateBackendApi}/>
+          : <ActivateUsers userData = {this.state.userData} updateBackend = {this.updateBackendApi} handlePrev = {this.handlePrevResultsClick} />
         }
         <UserForm updateBackend = {this.updateBackendApi} />
         
@@ -88,7 +127,7 @@ class ActivateUsers extends Component {
         <h1>All Users</h1>
         <button onClick={this.handleClick}>Show Users</button>
         {this.state.buttonClicked === true 
-          ? <UserList userData = {this.props.userData} updateBackend = {this.props.updateBackend}/> 
+          ? <UserList userData = {this.props.userData} updateBackend = {this.props.updateBackend} handlePrev = {this.props.handlePrev} /> 
           : null
         }   
       </div>
@@ -110,6 +149,7 @@ function UserList(props) {
     <div>
       {listItems}
       <button onClick={props.updateBackend}>More Results</button>
+      <button onClick={props.handlePrev}>Prev Results</button>
     </div>
   )
 }
@@ -137,14 +177,9 @@ class UserForm extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      
-      
-      
       // update state with the returned data and set data returned flag to true
       this.setState({userData: data, dataReturned: !this.state.dataReturned});
       //Call the backend api to update the userlist with the newly added user
-      this.props.updateBackend();
-     
     })
     .catch(err => console.log(err))
     
@@ -212,7 +247,7 @@ class ExerciseForm extends Component {
       // update state with the returned data and set data returned flag to true
       this.setState({exerciseData: data, dataReturned: !this.state.dataReturned})
       //Call the backend api to update the userlist with the newly added user
-      this.props.updateBackend()
+     
      
     })
     .catch(err => {
