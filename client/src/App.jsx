@@ -9,11 +9,10 @@ class App extends Component {
     limit: 5,
     skip: 0,
     totalResults: 0,
-    prevResults: false,
   };
 
   componentDidMount() {
-    this.updateBackendApi(false)
+    this.updateBackendApi()
   }
 
   // updateBackendApi = () => {
@@ -46,18 +45,18 @@ class App extends Component {
   //   }
   //   return body;
   // }
-  handlePrevResultsClick = () => {
-    this.setState({prevResults: true});
+  handlePrevResultsClick = async () => {
+    let skip = this.state.skip;
+    let limit = this.state.limit;
+    let newSkip = skip - limit
+    await this.setState({skip: newSkip, prevResults: true});
     this.updateBackendApi();
   } 
-
- 
-
 
   updateBackendApi = () => {
     //console.log(skipInput, "skipinput")
     //Get data from the backend api server
-     //this.callBackendApi()
+     console.log(JSON.stringify(this.state), "beforefetch state")
      fetch('/api/exercise/users', {
       method: 'POST',
       headers: {
@@ -68,7 +67,7 @@ class App extends Component {
     .then(res => res.json())
      //Update the state data with the new data 
     .then(res => {
-      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, prevResults: res.prevResults, totalResults: res.totalResults });
+      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, totalResults: res.totalResults });
       console.log(JSON.stringify(this.state));
       })
     .catch(err => console.log(err));

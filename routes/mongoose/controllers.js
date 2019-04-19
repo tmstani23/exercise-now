@@ -78,11 +78,20 @@ exports.get_users = (req, res) => {
   else if (skip + limit >= totalResults && totalResults != 0) {
     skip = totalResults - limit;
   }
-
-  if(prevResults == true) {
+  
+  if (prevResults == true) {
     skip = skip - limit;
-    
+    prevResults = false;
   }
+
+  // if(prevResults == true) {
+  //   let dontSkip = skip - (limit * 2);
+  //   if (dontSkip >= 0) {
+  //     skip = skip - (limit * 2);
+  //   }
+    
+    
+  // }
   
 
   console.log(skip, limit, totalResults, prevResults);
@@ -118,6 +127,7 @@ exports.get_user_exercise_log = (req, res) => {
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
     let limit = Number(req.body.limit);
+    
     console.log(typeof limit)
     if(err) {
       console.log(err);
