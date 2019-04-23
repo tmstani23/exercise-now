@@ -68,9 +68,10 @@ exports.get_users = (req, res) => {
     //console.log(count, "total count");
     totalResults = count;
   })
+
   //const userCount = User.estimatedDocumentCount().exec((err, count) => {return count});
   //console.log(userCount, "user count");
-
+  console.log(skip, limit, totalResults, prevResults, "beforelogic");
   if(skip + limit < totalResults) {
     skip = skip + limit;
     
@@ -84,17 +85,12 @@ exports.get_users = (req, res) => {
     prevResults = false;
   }
 
-  // if(prevResults == true) {
-  //   let dontSkip = skip - (limit * 2);
-  //   if (dontSkip >= 0) {
-  //     skip = skip - (limit * 2);
-  //   }
-    
-    
-  // }
+  if (skip < 0) {
+    skip = 0;
+  }
   
 
-  console.log(skip, limit, totalResults, prevResults);
+  console.log(skip, limit, totalResults, prevResults, "afterlogic");
   // Find any user
   User.find({})
     .limit(limit)

@@ -67,7 +67,7 @@ class App extends Component {
     .then(res => res.json())
      //Update the state data with the new data 
     .then(res => {
-      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, totalResults: res.totalResults });
+      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, prevResults: res.prevResults, totalResults: res.totalResults });
       console.log(JSON.stringify(this.state));
       })
     .catch(err => console.log(err));
