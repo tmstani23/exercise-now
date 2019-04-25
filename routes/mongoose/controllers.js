@@ -2,6 +2,29 @@ let User = require('./models/user');
 let Log = require('./models/exercise_log');
 
 
+// Helper Functions:
+let calculateSkip = (skip, limit, totalResults, prevResults) => {
+  console.log(skip, limit, totalResults, prevResults, "beforelogic");
+  if(skip + limit < totalResults) {
+    skip = skip + limit;
+    
+  }
+  else if (skip + limit >= totalResults && totalResults != 0) {
+    skip = totalResults - limit;
+  }
+  
+  if (prevResults == true) {
+    skip = skip - limit;
+    prevResults = false;
+  }
+
+  if (skip < 0) {
+    skip = 0;
+  }
+  console.log(skip, limit, totalResults, prevResults, "afterlogic");
+  return skip;
+}
+
 //Function that takes user form input as username and creates/saves a new user
 exports.post_user = (req, res) => {
     let userInput = req.body.username;
@@ -68,29 +91,13 @@ exports.get_users = (req, res) => {
     //console.log(count, "total count");
     totalResults = count;
   })
-
-  //const userCount = User.estimatedDocumentCount().exec((err, count) => {return count});
-  //console.log(userCount, "user count");
-  console.log(skip, limit, totalResults, prevResults, "beforelogic");
-  if(skip + limit < totalResults) {
-    skip = skip + limit;
-    
-  }
-  else if (skip + limit >= totalResults && totalResults != 0) {
-    skip = totalResults - limit;
-  }
   
-  if (prevResults == true) {
-    skip = skip - limit;
-    prevResults = false;
-  }
+  //Update skip value based on current skip value total results prev results and limit.
+  skip = calculateSkip(skip, limit, totalResults, prevResults)
+  //reset prevResults flag
+  //prevResults = false;
 
-  if (skip < 0) {
-    skip = 0;
-  }
-  
-
-  console.log(skip, limit, totalResults, prevResults, "afterlogic");
+  //console.log(skip, limit, totalResults, prevResults, "afterlogic");
   // Find any user
   User.find({})
     .limit(limit)
@@ -113,24 +120,34 @@ exports.get_users = (req, res) => {
     }) 
 }
 
-//Function to get a user's exercise logs using url parameters
 exports.get_user_exercise_log = (req, res) => {
   //Save url parameters as variables for use
   let userId = req.body.userId;
-  
+  let skip = req.body.skip;
+  let totalResults = req.body.totalResults;
+  let prevResults = req.body.prevResults;
+  let fromDate = req.body.fromDate;
+  let toDate = req.body.toDate;
+  let limit = Number(req.body.limit);
+
   //Search User collection by input id
-  User.findById(userId, (err,user) => {
-    let fromDate = req.body.fromDate;
-    let toDate = req.body.toDate;
-    let limit = Number(req.body.limit);
-    
-    console.log(typeof limit)
-    if(err) {
-      console.log(err);
-      return res.send({errorMessage: err.message});
-    }
+
     //If from and to date fields are not empty
-    else if(fromDate != "" || toDate != "") {
+    if(fromDate != "" || toDate != "") {
+      
+      //Get total count of log entries between date range:
+      Log.find({uid: userId, date: { $gte: fromDate, $lte: toDate }}).countDocuments((err, count) => {
+        if (err) {
+          console.log(err);
+        }
+        //console.log(count, "total count");
+        totalResults = count;
+      });
+      
+      //Update skip value based on current skip value total results prev results and limit.
+      skip = calculateSkip(skip, limit, totalResults, prevResults)
+      //reset prevResults flag
+      prevResults = false;
       
       //Search Log db collection for fields matching the date range and uid
       Log.find({uid: userId, date: { $gte: fromDate, $lte: toDate }} )
@@ -145,7 +162,7 @@ exports.get_user_exercise_log = (req, res) => {
         }
         else {
           //Send the result logs as json
-          return res.json({userData: {exerciseLogs: result}});
+          return res.json({userData: {exerciseLogs: result}, skip: skip, totalResults: totalResults, prevResults: prevResults});
         }
       })
     }
@@ -153,10 +170,25 @@ exports.get_user_exercise_log = (req, res) => {
    
     //Else if there is no errors or date range:
     else {
+
+      // Get count of logs based on date search criteria without limit
+      Log.find({uid: userId}).countDocuments((err, count) => {
+        if (err) {
+          console.log(err);
+        }
+        //console.log(count, "total count");
+        totalResults = count;
+      });
       //Send the complete user object as json
       //res.json({userData: user});
+      //Update skip value based on current skip value total results prev results and limit.
+        skip = calculateSkip(skip, limit, totalResults, prevResults)
+        //reset prevResults flag
+        prevResults = false;
+
       Log.find({uid: userId})
       .limit(limit)
+      .skip(skip)
       .exec((err,result) => {
         if(err) {
           return res.send({errorMessage: err.message});
@@ -167,9 +199,9 @@ exports.get_user_exercise_log = (req, res) => {
         }
         else {
           //Send the result logs as json
-          return res.json( { userData: {exerciseLogs: result} });
+          return res.json( { userData: {exerciseLogs: result}, skip: skip, totalResults: totalResults, prevResults: prevResults });
         }
       })
     }
-  })
 }
+

@@ -15,36 +15,6 @@ class App extends Component {
     this.updateBackendApi()
   }
 
-  // updateBackendApi = () => {
-    
-  //   //Get data from the backend api server
-  //    this.callBackendApi()
-  //    //Update the state data with the new data 
-  //    .then(res => {
-  //      this.setState({userData: res.userArr, isLoading: false, skip: res.skip, totalResults: res.totalResults });
-  //     console.log(JSON.stringify(this.state));
-  //     })
-  //    .catch(err => console.log(err));
-  // }
-
-  // callBackendApi = async () => {
-  //   //const response = await fetch('/api/exercise/users');
-  //   const response = await fetch('/api/exercise/users', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-type': 'application/json'
-  //     }, 
-  //     body: JSON.stringify(this.state),
-  //   })
-  //   const body = await response.json();
-
-  //   if (response.status !== 200) {
-  //     return (
-  //       <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
-  //     )
-  //   }
-  //   return body;
-  // }
   handlePrevResultsClick = async () => {
     let skip = this.state.skip;
     let limit = this.state.limit;
@@ -56,7 +26,7 @@ class App extends Component {
   updateBackendApi = () => {
     //console.log(skipInput, "skipinput")
     //Get data from the backend api server
-     console.log(JSON.stringify(this.state), "beforefetch state")
+     //console.log(JSON.stringify(this.state), "beforefetch state")
      fetch('/api/exercise/users', {
       method: 'POST',
       headers: {
@@ -68,29 +38,10 @@ class App extends Component {
      //Update the state data with the new data 
     .then(res => {
       this.setState({userData: res.userArr, isLoading: false, skip: res.skip, prevResults: res.prevResults, totalResults: res.totalResults });
-      console.log(JSON.stringify(this.state));
+      //console.log(JSON.stringify(this.state));
       })
     .catch(err => console.log(err));
   }
-
-  // callBackendApi = async () => {
-  //   //const response = await fetch('/api/exercise/users');
-  //   const response = await fetch('/api/exercise/users', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-type': 'application/json'
-  //     }, 
-  //     body: JSON.stringify(this.state),
-  //   })
-  //   const body = await response.json();
-
-  //   if (response.status !== 200) {
-  //     return (
-  //       <DisplayErrors errorMessage = {this.state.userData.errorMessage} />
-  //     )
-  //   }
-  //   return body;
-  // }
   
   render() {
     return (
@@ -335,14 +286,19 @@ class LogForm extends Component {
     fromDate: "",
     toDate: "",
     limit: 5,
+    skip: 0,
+    totalResults: 0,
     dataReturned: null,
     logData: [],
   }
 
   handleSubmit = (event) => {
-    event.preventDefault();
+    if(event) {
+      event.preventDefault();
+    }
     // reset data returned state to false:
-    this.setState({dataReturned: false, logData: []})
+    this.setState({dataReturned: false})
+    console.log(JSON.stringify(this.state), "beforefetch state")
 
     fetch('/api/exercise/log', {
       method: 'POST',
@@ -352,17 +308,27 @@ class LogForm extends Component {
       body: JSON.stringify(this.state),
     })
     .then(res => res.json())
-    .then(data => {
-      console.log(data)
+    .then(res => {
+      console.log(res, "afterfetch state")
       
       // update state with the returned data and set data returned flag to true
-      this.setState({logData: data, dataReturned: !this.state.dataReturned})
+      this.setState({logData: res, dataReturned: !this.state.dataReturned, skip: res.skip, prevResults: res.prevResults, totalResults: res.totalResults})
       
      
     })
     .catch(err => console.log(err)
     )
   }
+  handlePrevResultsClick = async () => {
+    let skip = this.state.skip;
+    let limit = this.state.limit;
+    let newSkip = skip - limit
+
+    console.log("prev results clicked");
+
+    await this.setState({skip: newSkip, prevResults: true});
+    this.handleSubmit();
+  } 
 
   handleChange = (event) => {
     const target = event.target;
@@ -388,8 +354,7 @@ class LogForm extends Component {
             <input type="submit" value="Submit"/>
           </form>
           {this.state.dataReturned===true && this.state.logData.errorMessage === undefined
-            ? <LogResults userData = {this.state.logData.userData} />
-             
+            ? <LogResults userData = {this.state.logData.userData} handlePrev = {this.handlePrevResultsClick} callBackend = {this.handleSubmit} /> 
             : null
           }
           {this.state.logData.errorMessage !== undefined
@@ -426,6 +391,8 @@ function LogResults(props) {
      <h3>All Exercise logs for {username}:</h3>
       <h4>Number of entries: {count}</h4>
       {listItems}
+      <button onClick={props.callBackend}>More Results</button>
+      <button onClick={props.handlePrev}>Prev Results</button>
     </div>
   )
 }
