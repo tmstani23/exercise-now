@@ -152,6 +152,7 @@ exports.get_user_exercise_log = (req, res) => {
       //Search Log db collection for fields matching the date range and uid
       Log.find({uid: userId, date: { $gte: fromDate, $lte: toDate }} )
       .limit(limit)
+      .skip(skip)
       .exec((err,result) => {
         if(err) {
           return res.send({errorMessage: err.message});

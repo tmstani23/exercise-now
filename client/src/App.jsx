@@ -292,9 +292,16 @@ class LogForm extends Component {
     logData: [],
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
+    //If handleSubmit was called by user clicking submit button in form
     if(event) {
+      //Prevent default action
       event.preventDefault();
+      //Reset skip to 0
+      console.log(event.target.type)
+      if(event.target.type == undefined) {
+        await this.setState({skip: 0});
+      }
     }
     // reset data returned state to false:
     this.setState({dataReturned: false})
@@ -351,7 +358,7 @@ class LogForm extends Component {
             <input id="from" type="text" name="fromDate" placeholder="From date (yyyy/mm/dd)"/>
             <input id="to" type="text" name="toDate" placeholder="To date (yyyy/mm/dd)"/>
             <input id="lim" type="number" name="limit" placeholder="Limit 5"/>
-            <input type="submit" value="Submit"/>
+            <input type="submit" name="submitButton" value="Submit"/>
           </form>
           {this.state.dataReturned===true && this.state.logData.errorMessage === undefined
             ? <LogResults userData = {this.state.logData.userData} handlePrev = {this.handlePrevResultsClick} callBackend = {this.handleSubmit} /> 
@@ -391,8 +398,8 @@ function LogResults(props) {
      <h3>All Exercise logs for {username}:</h3>
       <h4>Number of entries: {count}</h4>
       {listItems}
-      <button onClick={props.callBackend}>More Results</button>
-      <button onClick={props.handlePrev}>Prev Results</button>
+      <button type="button" onClick={props.callBackend}>More Results</button>
+      <button type="button" onClick={props.handlePrev}>Prev Results</button>
     </div>
   )
 }
