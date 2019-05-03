@@ -3,24 +3,49 @@
   display: grid;
   grid-template-columns: 1fr 1fr 2fr 2fr;
   margin: 0 auto;
-  background-color: lightgray;
+  opacity: 0.95;
+  /* min-height: 800px; */
+  border: solid 1px black;
+  
 }
 
 .container > div {
-  border: solid 1px black
+  margin-bottom: 200px;
 }
 
 .banner-div {
   text-align: center;
   margin: 0 auto;
+  margin-bottom: 20px;
+  color: white;
+}
+.banner-div > h1 {
+  font-size: 72px;
 }
 
 .footer {
   margin: 0 auto;
+  margin-top: 50px;
   text-align: center;
+ 
+
+  width:100%;
+  height:200px;
+  background:rgb(172, 172, 172);
 }
 
 input {
   width: 150px;
   margin: 5px;
+}
+
+body {
+  background-image: url(imgs/freeclimb.jpg);
+  background-repeat: no-repeat;
+  background-position: 50% 20%;
+  background-size: cover;
+}
+
+h1, h2, h3, li {
+  color: white
 }

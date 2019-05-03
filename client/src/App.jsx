@@ -6,7 +6,7 @@ class App extends Component {
   state = {
     userData: [],
     isLoading: true,
-    limit: 5,
+    limit: 10,
     skip: 0,
     totalResults: 0,
   };
@@ -100,6 +100,7 @@ function UserList(props) {
       {listItems}
       <button onClick={props.updateBackend}>More Results</button>
       <button onClick={props.handlePrev}>Prev Results</button>
+
     </div>
   )
 }
@@ -177,7 +178,12 @@ class ExerciseForm extends Component {
     description: "",
     duration: "",
     date: "",
+    buttonClicked: false,
   }
+  handleClick = (event) => {
+    this.setState({buttonClicked: !this.state.buttonClicked})
+  }
+
   handleSubmit = (event) => {
     // action="/api/exercise/add"
     event.preventDefault();
@@ -220,36 +226,44 @@ class ExerciseForm extends Component {
     
     return (
       <div className="col3">
-        <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h1>Add exercises</h1>
-            <input id="uid" type="text" name="userId" placeholder="userId*"/>
-            <input id="desc" type="text" name="description" placeholder="description*"/>
-            <input id="dur" type="text" name="duration" placeholder="duration* (mins.)"/>
-            <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
-            <input type="submit" value="Submit"/>
-          </form>
-          
-          
-          {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
-            ? 
-              <ul> New Exercise Log Created
-                <li>Username: {this.state.exerciseData.userData.username}</li>
-                <li>Entry UID: {this.state.exerciseData.newLog.uid}</li>
-                <li>Description: {this.state.exerciseData.newLog.description}</li>
-                <li>Duration: {this.state.exerciseData.newLog.duration}</li>
-                <li>Date: {this.state.exerciseData.newLog.date}</li>
-              </ul>
-            : null
-          }
-          {this.state.dataReturned === true && this.state.exerciseData.errorMessage !== undefined
-            ? <DisplayErrors errorMessage = {this.state.exerciseData.errorMessage}/>
-            : null
-          }
-          {
-            this.state.dataReturned === false
-              ? <Loading />
-              : null
-          }
+        <h1>Add exercises</h1>
+        <button onClick={this.handleClick}>Show Users</button>
+        {this.state.buttonClicked === true 
+          ? <div>
+              <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
+                  <input id="uid" type="text" name="userId" placeholder="userId*"/>
+                  <input id="desc" type="text" name="description" placeholder="description*"/>
+                  <input id="dur" type="text" name="duration" placeholder="duration* (mins.)"/>
+                  <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
+                  <input type="submit" value="Submit"/>
+                </form>
+                
+                
+                {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
+                  ? 
+                    <ul> New Exercise Log Created
+                      <li>Username: {this.state.exerciseData.userData.username}</li>
+                      <li>Entry UID: {this.state.exerciseData.newLog.uid}</li>
+                      <li>Description: {this.state.exerciseData.newLog.description}</li>
+                      <li>Duration: {this.state.exerciseData.newLog.duration}</li>
+                      <li>Date: {this.state.exerciseData.newLog.date}</li>
+                    </ul>
+                  : null
+                }
+                {this.state.dataReturned === true && this.state.exerciseData.errorMessage !== undefined
+                  ? <DisplayErrors errorMessage = {this.state.exerciseData.errorMessage}/>
+                  : null
+                }
+                {
+                  this.state.dataReturned === false
+                    ? <Loading />
+                    : null
+                }
+            </div>
+          : null
+        }   
+        
+        
       </div>
     )
   }
@@ -270,8 +284,8 @@ class ActivateLogs extends Component {
         <h1>Find Exercise Logs</h1>
         <button onClick={this.handleClick}>Show/Hide User Logs</button>
         {this.state.buttonClicked === true 
-          ? null
-          : <LogForm /> 
+          ? <LogForm /> 
+          : null
         }   
       </div>
       
@@ -285,7 +299,7 @@ class LogForm extends Component {
     userId: "",
     fromDate: "",
     toDate: "",
-    limit: 5,
+    limit: 10,
     skip: 0,
     totalResults: 0,
     dataReturned: null,
@@ -357,7 +371,6 @@ class LogForm extends Component {
             <input id="uid" type="text" name="userId" placeholder="User Id"/>
             <input id="from" type="text" name="fromDate" placeholder="From date (yyyy/mm/dd)"/>
             <input id="to" type="text" name="toDate" placeholder="To date (yyyy/mm/dd)"/>
-            <input id="lim" type="number" name="limit" placeholder="Limit 5"/>
             <input type="submit" name="submitButton" value="Submit"/>
           </form>
           {this.state.dataReturned===true && this.state.logData.errorMessage === undefined
