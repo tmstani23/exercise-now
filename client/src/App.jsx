@@ -26,7 +26,7 @@ class App extends Component {
   updateBackendApi = () => {
     //console.log(skipInput, "skipinput")
     //Get data from the backend api server
-     //console.log(JSON.stringify(this.state), "beforefetch state")
+     console.log(JSON.stringify(this.state), "beforefetch state")
      fetch('/api/exercise/users', {
       method: 'POST',
       headers: {
@@ -38,7 +38,7 @@ class App extends Component {
      //Update the state data with the new data 
     .then(res => {
       this.setState({userData: res.userArr, isLoading: false, skip: res.skip, prevResults: res.prevResults, totalResults: res.totalResults });
-      //console.log(JSON.stringify(this.state));
+      console.log(JSON.stringify(this.state), "afterfetch");
       })
     .catch(err => console.log(err));
   }
@@ -111,7 +111,11 @@ class UserForm extends Component {
     username: '',
     dataReturned: null,
     userData: [],
+    buttonClicked: false,
     
+  }
+  handleClick = (event) => {
+    this.setState({buttonClicked: !this.state.buttonClicked})
   }
 
   handleSubmit = (event) => {
@@ -144,11 +148,17 @@ class UserForm extends Component {
   render() {
     return (
         <div className="col2">
-          <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
-            <h1>Create a New User</h1>
+          <h1>Create User</h1>
+          <button onClick={this.handleClick}>Show Form</button>
+          {this.state.buttonClicked === true 
+          ? <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
+            
             <input id="uname" type="text" name="username" placeholder="username"/>
             <input type="submit" value="Submit"/>
-          </form>
+            </form>
+          : null
+          } 
+          
           {this.state.dataReturned===true && this.state.userData.errorMessage === undefined
             ? <ul>
                 <li>{this.state.userData.username}</li>
@@ -199,7 +209,7 @@ class ExerciseForm extends Component {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data)
+      //console.log(data)
       // update state with the returned data and set data returned flag to true
       this.setState({exerciseData: data, dataReturned: !this.state.dataReturned})
       //Call the backend api to update the userlist with the newly added user
@@ -312,7 +322,6 @@ class LogForm extends Component {
       //Prevent default action
       event.preventDefault();
       //Reset skip to 0
-      console.log(event.target.type)
       if(event.target.type == undefined) {
         await this.setState({skip: 0});
       }

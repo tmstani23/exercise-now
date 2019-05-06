@@ -1,11 +1,26 @@
+/* Colors
+l purple: #b09ee4
+d blue:  	#708abb
+l green: #afd293
+aqua green: #92c3bb
+dark red: #8f4848
+
+Fonts:
+    font-family: 'Anton', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
+*/
+
+
 .container {
   text-align: center;
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr 2fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   margin: 0 auto;
-  opacity: 0.95;
-  /* min-height: 800px; */
+  min-height: 800px;
+  max-width: 1200px;
   border: solid 1px black;
+  margin-bottom: 0px;
+  
   
 }
 
@@ -16,18 +31,20 @@
 .banner-div {
   text-align: center;
   margin: 0 auto;
-  margin-bottom: 20px;
   color: white;
+  height: 20%;
 }
 .banner-div > h1 {
   font-size: 72px;
+  font-family: 'Anton', sans-serif;
+  
 }
 
 .footer {
   margin: 0 auto;
-  margin-top: 50px;
   text-align: center;
- 
+  position: relative;
+  bottom: 0px;
 
   width:100%;
   height:200px;
@@ -42,10 +59,35 @@ input {
 body {
   background-image: url(imgs/freeclimb.jpg);
   background-repeat: no-repeat;
-  background-position: 50% 20%;
+  /* background-position: 50% 20%; */
+  background-position: center center;
   background-size: cover;
+  /* height: 100%;
+  width: 100%; */
 }
 
 h1, h2, h3, li {
-  color: white
+  color: white;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+button {
+  background-color: #8f4848;
+  border: 1px solid #b09ee4;
+  border-radius: 5px;
+  width: 150px;
+  height: 25px;
+}
+
+button:hover {
+  background-color: #92c3bb;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: .5fr .5fr .5fr .5fr;
+    max-height: 1200px;
+  }
 }

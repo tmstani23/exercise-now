@@ -95,7 +95,7 @@ exports.get_users = (req, res) => {
   //Update skip value based on current skip value total results prev results and limit.
   skip = calculateSkip(skip, limit, totalResults, prevResults)
   //reset prevResults flag
-  //prevResults = false;
+  prevResults = false;
 
   //console.log(skip, limit, totalResults, prevResults, "afterlogic");
   // Find any user
@@ -181,7 +181,6 @@ exports.get_user_exercise_log = (req, res) => {
         totalResults = count;
       });
       //Send the complete user object as json
-      //res.json({userData: user});
       //Update skip value based on current skip value total results prev results and limit.
         skip = calculateSkip(skip, limit, totalResults, prevResults)
         //reset prevResults flag
