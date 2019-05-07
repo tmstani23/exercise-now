@@ -56,13 +56,13 @@ class App extends Component {
         
         <ExerciseForm />
         
-        <ActivateLogs />
-        
+        <ActivateLogs />  
         
       </div>
     );
   }
 }
+
 
 class ActivateUsers extends Component {
   state = {
@@ -154,7 +154,7 @@ class UserForm extends Component {
           ? <form onSubmit={this.handleSubmit} onChange={this.handleChange} method="post">
             
             <input id="uname" type="text" name="username" placeholder="username"/>
-            <input type="submit" value="Submit"/>
+            <input class ="submit-input" type="submit" value="Submit"/>
             </form>
           : null
           } 
@@ -245,8 +245,8 @@ class ExerciseForm extends Component {
                   <input id="desc" type="text" name="description" placeholder="description*"/>
                   <input id="dur" type="text" name="duration" placeholder="duration* (mins.)"/>
                   <input id="dat" type="text" name="date" placeholder="date (yyyy/mm/dd)"/>
-                  <input type="submit" value="Submit"/>
-                </form>
+                  <input class="submit-input" type="submit" value="Submit"/>
+              </form>
                 
                 
                 {this.state.dataReturned === true && this.state.exerciseData.errorMessage === undefined
@@ -380,7 +380,7 @@ class LogForm extends Component {
             <input id="uid" type="text" name="userId" placeholder="User Id"/>
             <input id="from" type="text" name="fromDate" placeholder="From date (yyyy/mm/dd)"/>
             <input id="to" type="text" name="toDate" placeholder="To date (yyyy/mm/dd)"/>
-            <input type="submit" name="submitButton" value="Submit"/>
+            <input class ="submit-input" type="submit" name="submitButton" value="Submit"/>
           </form>
           {this.state.dataReturned===true && this.state.logData.errorMessage === undefined
             ? <LogResults userData = {this.state.logData.userData} handlePrev = {this.handlePrevResultsClick} callBackend = {this.handleSubmit} /> 
