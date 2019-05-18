@@ -40,7 +40,8 @@ value = moment(this[key]).format('MMMM, DD, YYYY');
 });
 //Import middleware and enable
 app.use(middleware);
-
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
 //import routes and enable for use
 app.use('/', routes);
 
