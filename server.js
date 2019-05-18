@@ -9,22 +9,24 @@ let moment = require('moment');
 
 
 //Initialize mongoose connection with cloud db server
-// mongoose.connect(process.env.MLAB_URI, function(err) {
+mongoose.connect(process.env.DATABASE_URL, function(err) {
+  console.log(process.env.DATABASE_URL);
+  if(err) {
+    console.log(err);
+    
+  }
+  //Log if connection was established or not
+  console.log(mongoose.connection.readyState, "Mongo DB connection established");
+});
+
+// mongoose.connect("mongodb://localhost:27017/exercise_db", function(err) {
 //   if(err) {
 //     console.log(err);
 //   }
 //   //Log if connection was established or not
 //   console.log(mongoose.connection.readyState, "Mongo DB connection established");
+//   //mongoose.connection.db.dropDatabase();
 // });
-
-mongoose.connect("mongodb://localhost:27017/exercise_db", function(err) {
-  if(err) {
-    console.log(err);
-  }
-  //Log if connection was established or not
-  console.log(mongoose.connection.readyState, "Mongo DB connection established");
-  //mongoose.connection.db.dropDatabase();
-});
 
 
 // convert all dates to formatted dates

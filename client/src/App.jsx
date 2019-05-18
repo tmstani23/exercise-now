@@ -134,11 +134,11 @@ class UserForm extends Component {
       // update state with the returned data and set data returned flag to true
       this.setState({userData: data, dataReturned: !this.state.dataReturned});
       //Call the backend api to update the userlist with the newly added user
+
     })
     .catch(err => console.log(err))
-    
-    
   }
+
   handleChange = (event) => {
     this.setState({username: event.target.value})
     
