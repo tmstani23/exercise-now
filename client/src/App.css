@@ -1,0 +1,147 @@
+/* Colors
+l purple: #b09ee4
+d blue:  	#708abb
+l green: #afd293
+aqua green: #92c3bb
+dark red: #8f4848
+
+Fonts:
+    font-family: 'Anton', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
+*/
+
+
+.container {
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  margin: 0 auto;
+  min-height: 800px;
+  max-width: 1400px;
+  margin-bottom: 20px;
+  
+  
+}
+
+.container > div {
+  border-right: solid 1px #afd293;
+  
+}
+
+.banner-div {
+  text-align: center;
+  margin: 0 auto;
+  color: white;
+  height: 20%;
+}
+.banner-div > h1 {
+  font-size: 72px;
+  font-family: 'Anton', sans-serif;
+  
+}
+
+.footer {
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  bottom: 0px;
+  width:100%;
+  height:200px;
+  background:rgb(172, 172, 172);
+}
+.footer > div > a {
+  padding: 10px;
+  color:white;
+  font-size: 18px;
+}
+.footer p {
+  color: #8f4848;
+}
+form {
+  display: inline-block;
+  width: 100%;
+}
+form > input {
+  width: 150px;
+  margin-right: 50px;
+  margin-bottom: 5px;
+  margin-left: 50px;
+  
+}
+ul {
+  /* border: 1px solid black;
+  border-bottom: 0px; */
+  margin: 0 auto;
+  min-width: 300px;
+  background-color: #708abb;
+  box-shadow:-3px 3px 3px 1px #b09ee4;
+  list-style-type: none;
+  margin: 6px;
+  text-align: left;
+  padding: 5px;
+  padding-right: 1px;
+}
+
+body {
+  background-image: url(imgs/freeclimb.jpg);
+  background-repeat: no-repeat;
+  /* background-position: 50% 20%; */
+  background-position: center center;
+  background-size: cover;
+  height: auto;
+  width: 100%;
+}
+
+h1, h2, h3, li {
+  color: white;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+li, p {
+  font-family: 'PT Sans', sans-serif;
+  color: #afd293;
+}
+.error-text {
+  color:#8f4848;
+  font-size:  16px;
+  font-family: 'Pt Sans', sans-serif;
+}
+
+button {
+  background-color: #8f4848;
+  border: 2px solid #b09ee4;
+  box-shadow:1px 1px 1px 1px #b09ee4;
+  border-radius: 5px;
+  width: 150px;
+  height: 25px;
+  margin: 5px;
+  color: white;
+}
+
+button:hover {
+  background-color: #92c3bb;
+}
+.submit-input {
+  background-color: #708abb;
+  border: 1px solid #b09ee4;
+  box-shadow:1px 1px 1px 1px #b09ee4;
+  border-radius: 5px;
+  width: 75px;
+  height: 25px;
+}
+.submit-input:hover {
+  background-color: #afd293;
+}
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: .25fr .25fr .25fr .25fr auto;
+    /* min-height: 600px; */
+    margin-bottom: 50px;
+  }
+  .container > div > form {
+    display: inline-block;
+    margin: 0 auto;
+  }
+}
