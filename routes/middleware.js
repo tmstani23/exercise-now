@@ -12,7 +12,8 @@ router.use(bodyParser.urlencoded({extended: true}))
 router.use(bodyParser.json())
 
 //Use public folder to allow using public folderand its css file
-//router.use(express.static('public'));
+//set this to client public folder
+//router.use(express.static('/client/public'));
 //Use views folder and its html file
 //router.use(express.static('views'));
 
