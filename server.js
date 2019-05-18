@@ -6,10 +6,11 @@ let main = require('./app');
 require('dotenv').config();
 const mongoose = require('mongoose');
 let moment = require('moment');
+let test_uri = process.env.TEST_DB_URI;
 
 
 //Initialize mongoose connection with cloud db server
-mongoose.connect(process.env.DATABASE_URL, function(err) {
+mongoose.connect(process.env.DATABASE_URL || test_uri, function(err) {
   console.log(process.env.DATABASE_URL);
   if(err) {
     console.log(err);
