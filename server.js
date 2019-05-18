@@ -49,6 +49,6 @@ app.use('/', routes);
 //main.createTim;
 
 // Main server listener that accepts http connections on port or localhost 3000
-const listener = app.listen(4000, () => {
+const listener = app.listen(process.env.PORT || 4000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })

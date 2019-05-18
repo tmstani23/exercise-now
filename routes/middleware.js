@@ -13,7 +13,7 @@ router.use(bodyParser.json())
 
 //Use public folder to allow using public folderand its css file
 //set this to client public folder
-//router.use(express.static('/client/public'));
+router.use(express.static(__dirname + '/client/public'));
 //Use views folder and its html file
 //router.use(express.static('views'));
 
