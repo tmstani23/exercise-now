@@ -12,7 +12,7 @@ const path = require('path');
 
 //Initialize mongoose connection with cloud db server
 mongoose.connect(process.env.DATABASE_URL || test_uri, function(err) {
-  console.log(process.env.DATABASE_URL);
+  
   if(err) {
     console.log(err);
     

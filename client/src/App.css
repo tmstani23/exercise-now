@@ -49,13 +49,19 @@ Fonts:
   height:200px;
   background:rgb(172, 172, 172);
 }
-.footer > div > a {
+.footer a {
   padding: 10px;
   color:white;
   font-size: 18px;
 }
+.footer a:hover {
+  
+  color:#708abb;
+  
+}
 .footer p {
   color: #8f4848;
+  font-size: 12px;
 }
 form {
   display: inline-block;
@@ -80,6 +86,9 @@ ul {
   text-align: left;
   padding: 5px;
   padding-right: 1px;
+}
+ul:hover {
+  border: 1px solid #afd293
 }
 
 body {
@@ -132,6 +141,8 @@ button:hover {
 .submit-input:hover {
   background-color: #afd293;
 }
+
+
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .container {

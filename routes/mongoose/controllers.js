@@ -4,7 +4,7 @@ let Log = require('./models/exercise_log');
 
 // Helper Functions:
 let calculateSkip = (skip, limit, totalResults, prevResults) => {
-  console.log(skip, limit, totalResults, prevResults, "beforelogic");
+  //console.log(skip, limit, totalResults, prevResults, "beforelogic");
   if(skip + limit < totalResults) {
     skip = skip + limit;
     
@@ -21,7 +21,7 @@ let calculateSkip = (skip, limit, totalResults, prevResults) => {
   if (skip < 0) {
     skip = 0;
   }
-  console.log(skip, limit, totalResults, prevResults, "afterlogic");
+  //console.log(skip, limit, totalResults, prevResults, "afterlogic");
   return skip;
 }
 
