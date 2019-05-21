@@ -1,16 +1,18 @@
 # Exercise Tracker REST API
 
-#### An exercise tracking application utilizing mongodb and express
+#### An exercise tracking application utilizing Mongodb, React Express, Node and CSS Grid.
 
 ### Installation Instructions
 Clone and download the repo.  Make sure node and npm are installed.  
 Open a node terminal to the root folder of the repo and type npm install
 type cd client to enter the client folder.  Type npm install to install React dependencies.
 
-####Running Instructions
+### Running Instructions
 After installation in the root folder type npm start in terminal.  The backend server should start.
 cd client to get into the client folder.
 Type npm start in the client folder and a new browser window should open with the app running.
+
+Live Version: http://exercise-now.herokuapp.com/
 
 ### User Stories
 
